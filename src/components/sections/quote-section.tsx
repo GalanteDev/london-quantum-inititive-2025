@@ -26,7 +26,7 @@ export function QuoteSection() {
             className="absolute inset-0"
             style={{
               backgroundImage: `linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px), 
-                             linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px)`,
+                               linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px)`,
               backgroundSize: "60px 60px",
             }}
           ></div>
@@ -41,12 +41,12 @@ export function QuoteSection() {
           className="max-w-3xl mx-auto text-center"
         >
           <div className="mb-6 flex justify-center">
-            <div className="w-12 h-12 text-white/30 text-5xl font-serif">"</div>
+            <div className="w-12 h-12 text-white/30 text-5xl font-serif">&ldquo;</div>
           </div>
 
           <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-light italic mb-4 sm:mb-6 md:mb-8 leading-relaxed px-2">
             Quantum mechanics describes nature as absurd from the point of view of common sense. And yet it fully agrees
-            with experiment. So I hope you can accept nature as She is — absurd.
+            with experiment. So I hope you can accept nature as She is &mdash; absurd.
           </p>
 
           <div className="w-16 h-1 bg-white/20 mx-auto mb-6"></div>
