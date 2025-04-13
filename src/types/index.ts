@@ -15,6 +15,7 @@ export interface Post {
     width?: number
     height?: number
   }
+  speakers?: Speaker
 }
 
 export type Feature = {
@@ -31,6 +32,7 @@ export type Feature = {
     category: string
     imageUrl: string
     slug: string
+    speaker?: Speaker
   }
   
   export type QuantumLogoProps = {
@@ -46,6 +48,7 @@ export type Feature = {
     universityUrl?: string;
     isFounder?: boolean;
     googleScholarUrl?: string;
+    biography: string;
   };
   
   export type EventOrNews = {

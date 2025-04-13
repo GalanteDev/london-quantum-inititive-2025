@@ -1,4 +1,4 @@
-import { gql } from "graphql-request"
+import { gql } from "graphql-request";
 
 export const GET_ALL_POSTS = gql`
   query GetAllPosts {
@@ -15,31 +15,44 @@ export const GET_ALL_POSTS = gql`
       }
     }
   }
-`
+`;
 
 export const GET_POST_BY_SLUG = gql`
-query GetPostBySlug($slug: String!) {
-  postsCollection(where: { slug: $slug }, limit: 1) {
-    items {
-      title
-      slug
-      date
-      showInNews
-      photo {
-        url
+  query GetPostBySlug($slug: String!) {
+    postsCollection(where: { slug: $slug }, locale: "en-US") {
+      items {
         title
+        slug
+        date
+        showInNews
         description
-        width
-        height
+        mainText
+        address
+        photo {
+          url
+          title
+          description
+          width
+          height
+        }
+        tag
+        speakers {
+          ... on Speakers {
+            name
+            biography
+            universityUrl
+            isFounder
+            googleScholarUrl
+            photo {
+              url
+            }
+          }
+        }
       }
-      description
-      mainText
-      tag
-      address
     }
   }
-}
 `;
+
 
 export const GET_HIGHLIGHTED_POSTS = gql`
   query GetHighlightedPosts {
@@ -57,4 +70,4 @@ export const GET_HIGHLIGHTED_POSTS = gql`
       }
     }
   }
-`
+`;

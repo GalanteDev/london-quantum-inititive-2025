@@ -1,52 +1,55 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useParams, useRouter } from "next/navigation"
-
-import { client } from "@/lib/contentful/client"
-import { GET_POST_BY_SLUG } from "@/lib/contentful/queries"
-
-import { ParallaxEffect } from "@/components/scroll-effects/ParallaxEffect"
-import Navbar from "@/components/sections/navbar-section"
-import { FooterSection } from "@/components/sections/footer-section"
-import { EventHero } from "@/components/sections/events-news-detail.tsx/EventHero"
-import { EventBody } from "@/components/sections/events-news-detail.tsx/EventBody"
-import { Post } from "@/types"
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { gql } from "graphql-request";
+import { client } from "@/lib/contentful/client"; // Asegurate de que esté configurado correctamente
+import { GET_POST_BY_SLUG } from "@/lib/contentful/queries"; // La query actualizada
+import { ParallaxEffect } from "@/components/scroll-effects/ParallaxEffect";
+import Navbar from "@/components/sections/navbar-section";
+import { FooterSection } from "@/components/sections/footer-section";
+import { EventHero } from "@/components/sections/events-news-detail.tsx/EventHero";
+import { EventBody } from "@/components/sections/events-news-detail.tsx/EventBody";
+import { Post } from "@/types";
 
 export default function EventNewsDetailPage() {
-  const params = useParams()
-  const router = useRouter()
-  const [event, setEvent] = useState<Post | null>(null)
-  const [isLoaded, setIsLoaded] = useState(false)
+  const params = useParams();
+  const router = useRouter();
+  const [event, setEvent] = useState<Post | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const fetchEvent = async () => {
-      const slug = params?.slug as string
-      if (!slug) return
+      const slug = params?.slug as string;
+      if (!slug) return;
 
       try {
-        const res = await client.request<{ postsCollection: { items: Post[] } }>(GET_POST_BY_SLUG, { slug })
-        const item = res.postsCollection.items[0]
+        const response = await client.request<{ postsCollection: { items: Post[] } }>(
+          GET_POST_BY_SLUG,
+          { slug }
+        );
+        console.log("Palito:", response); // Verifica la respuesta en la consola
+        const item = response.postsCollection.items[0];
 
-        if (!item) return router.push("/events-news")
+        if (!item) return router.push("/events-news");
 
-        setEvent(item)
-        setIsLoaded(true)
+        setEvent(item);
+        setIsLoaded(true);
       } catch (err) {
-        console.error("Error fetching post by slug:", err)
-        router.push("/events-news")
+        console.error("Error fetching post by slug:", err);
+        router.push("/events-news");
       }
-    }
+    };
 
-    fetchEvent()
-  }, [params?.slug, router])
+    fetchEvent();
+  }, [params?.slug, router]);
 
   if (!isLoaded || !event) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-mono-100">
         <div className="text-mono-500 animate-pulse">Loading event...</div>
       </div>
-    )
+    );
   }
 
   return (
@@ -68,5 +71,5 @@ export default function EventNewsDetailPage() {
       <EventBody event={event} />
       <FooterSection />
     </div>
-  )
+  );
 }
