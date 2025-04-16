@@ -2,7 +2,8 @@
 
 import Link from "next/link"
 import { Github, Twitter, Linkedin, Mail } from "lucide-react"
-import { FadeInOnScroll } from "../scroll-effects/FadeInOnScroll"
+import { FadeInOnScroll } from "@/components/scroll-effects/FadeInOnScroll"
+import { motion } from "framer-motion"
 
 export function FooterSection() {
   return (
@@ -11,45 +12,67 @@ export function FooterSection() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-8">
           <FadeInOnScroll className="md:col-span-2" threshold={0.1} direction="up" delay={0.1}>
             <Link href="/" className="inline-block mb-4 md:mb-6">
-              <div
+              <motion.div
+                whileHover={{ scale: 1.03 }}
+                transition={{ type: "spring", stiffness: 300, damping: 15 }}
                 className="w-[100px] h-[33px] md:w-[120px] md:h-[40px] bg-contain bg-center bg-no-repeat filter invert brightness-0 contrast-200"
                 style={{
                   backgroundImage: `url(https://hebbkx1anhila5yf.public.blob.vercel-storage.com/losgos2-cnr2laMSCg9CEgZbUDH99IRnunh0F7.png)`,
                 }}
-              ></div>
+              ></motion.div>
             </Link>
             <p className="text-mono-400 mb-4 md:mb-6 max-w-md text-xs sm:text-sm">
               Advancing our understanding of the quantum universe through research, training, and teaching excellence.
             </p>
             <div className="flex space-x-3 md:space-x-4">
-              <Link
-                href="#"
-                className="text-mono-400 hover:text-white transition-colors p-1.5 md:p-2"
-                aria-label="Twitter"
+              <motion.div
+                whileHover={{ scale: 1.1, y: -2 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
-                <Twitter className="h-4 w-4 md:h-5 md:w-5" />
-              </Link>
-              <Link
-                href="#"
-                className="text-mono-400 hover:text-white transition-colors p-1.5 md:p-2"
-                aria-label="LinkedIn"
+                <Link
+                  href="#"
+                  className="text-mono-400 hover:text-white transition-colors p-1.5 md:p-2 bg-mono-900/50 rounded-sm hover:bg-mono-800/70"
+                  aria-label="Twitter"
+                >
+                  <Twitter className="h-4 w-4 md:h-5 md:w-5" />
+                </Link>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.1, y: -2 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
-                <Linkedin className="h-4 w-4 md:h-5 md:w-5" />
-              </Link>
-              <Link
-                href="#"
-                className="text-mono-400 hover:text-white transition-colors p-1.5 md:p-2"
-                aria-label="GitHub"
+                <Link
+                  href="#"
+                  className="text-mono-400 hover:text-white transition-colors p-1.5 md:p-2 bg-mono-900/50 rounded-sm hover:bg-mono-800/70"
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin className="h-4 w-4 md:h-5 md:w-5" />
+                </Link>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.1, y: -2 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
-                <Github className="h-4 w-4 md:h-5 md:w-5" />
-              </Link>
-              <Link
-                href="#"
-                className="text-mono-400 hover:text-white transition-colors p-1.5 md:p-2"
-                aria-label="Email"
+                <Link
+                  href="#"
+                  className="text-mono-400 hover:text-white transition-colors p-1.5 md:p-2 bg-mono-900/50 rounded-sm hover:bg-mono-800/70"
+                  aria-label="GitHub"
+                >
+                  <Github className="h-4 w-4 md:h-5 md:w-5" />
+                </Link>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.1, y: -2 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
-                <Mail className="h-4 w-4 md:h-5 md:w-5" />
-              </Link>
+                <Link
+                  href="#"
+                  className="text-mono-400 hover:text-white transition-colors p-1.5 md:p-2 bg-mono-900/50 rounded-sm hover:bg-mono-800/70"
+                  aria-label="Email"
+                >
+                  <Mail className="h-4 w-4 md:h-5 md:w-5" />
+                </Link>
+              </motion.div>
             </div>
           </FadeInOnScroll>
 
@@ -57,32 +80,56 @@ export function FooterSection() {
             <h3 className="text-base md:text-lg font-medium mb-3 md:mb-4">Navigation</h3>
             <ul className="space-y-1.5 md:space-y-2">
               <li>
-                <Link href="/research" className="text-mono-400 hover:text-white transition-colors text-sm">
+                <Link
+                  href="/research"
+                  className="text-mono-400 hover:text-white transition-colors text-sm group flex items-center"
+                >
+                  <span className="w-0 h-px bg-white transition-all duration-300 mr-0 group-hover:w-2 group-hover:mr-1.5"></span>
                   Research
                 </Link>
               </li>
               <li>
-                <Link href="/network" className="text-mono-400 hover:text-white transition-colors text-sm">
+                <Link
+                  href="/network"
+                  className="text-mono-400 hover:text-white transition-colors text-sm group flex items-center"
+                >
+                  <span className="w-0 h-px bg-white transition-all duration-300 mr-0 group-hover:w-2 group-hover:mr-1.5"></span>
                   Network
                 </Link>
               </li>
               <li>
-                <Link href="/education" className="text-mono-400 hover:text-white transition-colors text-sm">
+                <Link
+                  href="/education"
+                  className="text-mono-400 hover:text-white transition-colors text-sm group flex items-center"
+                >
+                  <span className="w-0 h-px bg-white transition-all duration-300 mr-0 group-hover:w-2 group-hover:mr-1.5"></span>
                   Education
                 </Link>
               </li>
               <li>
-                <Link href="/publications" className="text-mono-400 hover:text-white transition-colors text-sm">
+                <Link
+                  href="/publications"
+                  className="text-mono-400 hover:text-white transition-colors text-sm group flex items-center"
+                >
+                  <span className="w-0 h-px bg-white transition-all duration-300 mr-0 group-hover:w-2 group-hover:mr-1.5"></span>
                   Publications
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-mono-400 hover:text-white transition-colors text-sm">
+                <Link
+                  href="/about"
+                  className="text-mono-400 hover:text-white transition-colors text-sm group flex items-center"
+                >
+                  <span className="w-0 h-px bg-white transition-all duration-300 mr-0 group-hover:w-2 group-hover:mr-1.5"></span>
                   About
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-mono-400 hover:text-white transition-colors text-sm">
+                <Link
+                  href="/contact"
+                  className="text-mono-400 hover:text-white transition-colors text-sm group flex items-center"
+                >
+                  <span className="w-0 h-px bg-white transition-all duration-300 mr-0 group-hover:w-2 group-hover:mr-1.5"></span>
                   Contact
                 </Link>
               </li>
@@ -96,12 +143,14 @@ export function FooterSection() {
               <p>123 Science Avenue</p>
               <p>London, UK</p>
               <p className="mt-4">
-                <a href="mailto:info@lqui.org" className="hover:text-white transition-colors">
+                <a href="mailto:info@lqui.org" className="hover:text-white transition-colors group flex items-center">
+                  <span className="w-0 h-px bg-white transition-all duration-300 mr-0 group-hover:w-2 group-hover:mr-1.5"></span>
                   info@lqui.org
                 </a>
               </p>
               <p>
-                <a href="tel:+442012345678" className="hover:text-white transition-colors">
+                <a href="tel:+442012345678" className="hover:text-white transition-colors group flex items-center">
+                  <span className="w-0 h-px bg-white transition-all duration-300 mr-0 group-hover:w-2 group-hover:mr-1.5"></span>
                   +44 20 1234 5678
                 </a>
               </p>

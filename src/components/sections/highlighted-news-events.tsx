@@ -2,7 +2,7 @@
 
 import { useRef } from "react"
 import Link from "next/link"
-import { motion, useInView } from "framer-motion"
+import { motion, useInView, useScroll, useTransform, useSpring } from "framer-motion"
 import { Calendar, ArrowRight, ChevronRight } from "lucide-react"
 import { getCategoryColor } from "@/lib/utils/tags"
 import { ParallaxEffect } from "../scroll-effects/ParallaxEffect"
@@ -24,7 +24,18 @@ interface EventsNewsSectionProps {
 
 export function HighlightedNewsEvents({ newsEvents }: EventsNewsSectionProps) {
   const ref = useRef(null)
+  const titleRef = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.1 })
+  const isTitleInView = useInView(titleRef, { once: true, amount: 0.5 })
+
+  // Scroll effects for title animation - similar to hero section
+  const { scrollY } = useScroll()
+  const titleY = useTransform(scrollY, [0, 300], [20, 0])
+  const titleOpacity = useTransform(scrollY, [0, 300], [0.8, 1])
+
+  // Smooth spring animations
+  const springTitleY = useSpring(titleY, { stiffness: 80, damping: 30 })
+  const springTitleOpacity = useSpring(titleOpacity, { stiffness: 80, damping: 30 })
 
   return (
     <section
@@ -50,32 +61,76 @@ export function HighlightedNewsEvents({ newsEvents }: EventsNewsSectionProps) {
       </ParallaxEffect>
 
       <div className="container mx-auto px-4 md:px-6 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.7 }}
-          className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 md:mb-16"
-        >
-          <div className="relative">
-            <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-1 h-12 bg-mono-400 hidden md:block"></div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-mono-900 mb-3 md:mb-4">
-              News & Events
-            </h2>
-            <p className="text-mono-600 max-w-xl text-sm sm:text-base md:text-lg">
-              Stay updated with our latest research breakthroughs, upcoming events, and initiatives
-            </p>
-          </div>
-          <Link
-            href="/events-news"
-            className="group inline-flex items-center justify-center px-5 py-2.5 mt-6 md:mt-0 
-                      border border-mono-300 rounded-sm bg-white text-mono-900 font-medium 
-                      hover:bg-mono-900 hover:text-white hover:border-mono-900 
-                      transition-all duration-300 shadow-sm hover:shadow-md text-sm"
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 md:mb-16">
+          {/* Title section with enhanced animation */}
+          <motion.div
+            ref={titleRef}
+            className="relative"
+            style={{
+              opacity: springTitleOpacity,
+              y: springTitleY,
+            }}
           >
-            View all news
-            <ChevronRight className="ml-1.5 h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
-          </Link>
-        </motion.div>
+            <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-1 h-12 bg-mono-400 hidden md:block"></div>
+
+            {/* Title with reveal animation */}
+            <motion.h2
+              initial={{ opacity: 0, y: 15, clipPath: "inset(0 0 100% 0)" }}
+              animate={
+                isTitleInView
+                  ? {
+                      opacity: 1,
+                      y: 0,
+                      clipPath: "inset(0 0 0% 0)",
+                    }
+                  : {
+                      opacity: 0,
+                      y: 15,
+                      clipPath: "inset(0 0 100% 0)",
+                    }
+              }
+              transition={{ duration: 0.9, ease: "easeOut" }}
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-mono-900 mb-3 md:mb-4"
+            >
+              News & Events
+            </motion.h2>
+
+            {/* Animated underline - similar to hero section */}
+            <motion.div
+              initial={{ width: 0, opacity: 0 }}
+              animate={isTitleInView ? { width: "80px", opacity: 0.7 } : { width: 0, opacity: 0 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+              className="h-px bg-mono-400 mb-4 hidden md:block"
+            ></motion.div>
+
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={isTitleInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+              transition={{ duration: 0.7, delay: 0.3 }}
+              className="text-mono-600 max-w-xl text-sm sm:text-base md:text-lg"
+            >
+              Stay updated with our latest research breakthroughs, upcoming events, and initiatives
+            </motion.p>
+          </motion.div>
+
+          {/* Button changed to black */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+            transition={{ duration: 0.7, delay: 0.4 }}
+          >
+            <Link
+              href="/events-news"
+              className="group inline-flex items-center justify-center px-5 py-2.5 mt-6 md:mt-0 
+                        border border-mono-900 rounded-sm bg-mono-900 text-white font-medium 
+                        hover:bg-mono-800 hover:border-mono-800 
+                        transition-all duration-300 shadow-sm hover:shadow-md text-sm"
+            >
+              View all news
+              <ChevronRight className="ml-1.5 h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+            </Link>
+          </motion.div>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
           {newsEvents?.slice(0, 6).map((item, index) => (
