@@ -11,7 +11,7 @@ import { NewsEvent, Post } from "@/types";
 import { useEffect, useState } from 'react';
 
 import { HighlightedNewsEvents } from "@/components/sections/highlighted-news-events";
-import { fetchHighlightedEventsNews } from "@/lib/contentful/fetch-posts";
+import { fetchHighlightedEventsNews, getCollaborators } from "@/lib/contentful/fetch-posts";
 
 export default function Home() {
   const [highlightedNewsEvents, setHighlightedNewsEvents] = useState<Post[]>([]);
@@ -23,12 +23,14 @@ export default function Home() {
       try {
         const data = await fetchHighlightedEventsNews();
         setHighlightedNewsEvents(data);
-        console.log("Fetched highlighted posts:", data);
+        const collabs = await getCollaborators()
+        console.log("Fetched highlighted posts:", collabs);
       } catch (err: any) {
         console.error("Error fetching data:", err);
       } finally {
       }
     };
+
 
     fetchData();
    

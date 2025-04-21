@@ -1,38 +1,90 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { motion, useScroll, useTransform, useSpring, useInView } from "framer-motion"
+import { motion, useScroll, useTransform, useSpring, useInView, AnimatePresence } from "framer-motion"
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, ChevronDown } from "lucide-react"
 import Image from "next/image"
+import { QuantumLogo } from "@/components/ui/quantum-logo"
+
+// Custom styles for shadow glow effect
+const shadowGlowStyle = `
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 0 3px 0.5px rgba(255, 255, 255, 0.4); }
+    50% { box-shadow: 0 0 5px 1px rgba(255, 255, 255, 0.6); }
+  }
+  .shadow-glow {
+    animation: glow 2s ease-in-out infinite;
+  }
+`
+
+// Founders data for the carousel
+const founders = [
+  {
+    name: "Dr. Tarek Anous",
+    title: "Theoretical Physicist",
+    image: "/images/heroback.png", // Using the same image for now
+  },
+  {
+    name: "Dr. Dionysios Anninos",
+    title: "Quantum Field Theorist",
+    image: "/images/heroback.png", // Using the same image for now
+  },
+  {
+    name: "Dr. Damian Galante",
+    title: "Cosmologist & String Theorist",
+    image: "/images/heroback.png", // Using the same image for now
+  },
+]
 
 export function HeroSection() {
   const [isLoaded, setIsLoaded] = useState(false)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [currentSlide, setCurrentSlide] = useState(0)
   const heroRef = useRef(null)
   const titleRef = useRef(null)
+  const carouselRef = useRef(null)
   const isInView = useInView(titleRef, { once: true })
 
-  // Parallax scroll effect - reduced intensity
+  // Parallax scroll effect
   const { scrollY } = useScroll()
-  const y1 = useTransform(scrollY, [0, 600], [0, 60]) // Reduced movement
-  const y2 = useTransform(scrollY, [0, 600], [0, 80]) // Reduced movement
-  const opacity = useTransform(scrollY, [0, 400], [1, 0]) // Smoother fade
-  const scale = useTransform(scrollY, [0, 400], [1, 1.1]) // Reduced scale effect
-  const blur = useTransform(scrollY, [0, 400], [0, 5]) // Reduced blur
+  const y1 = useTransform(scrollY, [0, 600], [0, 20])
+  const y2 = useTransform(scrollY, [0, 600], [0, 30])
+  const opacity = useTransform(scrollY, [0, 500], [1, 0])
+  const scale = useTransform(scrollY, [0, 500], [1, 1.03])
 
-  // Transition effect for the bottom of the hero section - smoother
-  const bottomOpacity = useTransform(scrollY, [0, 300], [0, 1]) // Smoother fade in
-  const bottomY = useTransform(scrollY, [0, 300], [30, 0]) // Reduced movement
+  // Smooth spring animations
+  const springY1 = useSpring(y1, { stiffness: 50, damping: 20 })
+  const springY2 = useSpring(y2, { stiffness: 50, damping: 20 })
+  const springOpacity = useSpring(opacity, { stiffness: 50, damping: 20 })
+  const springScale = useSpring(scale, { stiffness: 50, damping: 20 })
 
-  // Smoother spring animations with lower stiffness
-  const springY1 = useSpring(y1, { stiffness: 80, damping: 30 }) // Lower stiffness
-  const springY2 = useSpring(y2, { stiffness: 80, damping: 30 }) // Lower stiffness
-  const springOpacity = useSpring(opacity, { stiffness: 80, damping: 30 }) // Lower stiffness
-  const springScale = useSpring(scale, { stiffness: 80, damping: 30 }) // Lower stiffness
-  const springBlur = useSpring(blur, { stiffness: 80, damping: 30 }) // Lower stiffness
-  const springBottomOpacity = useSpring(bottomOpacity, { stiffness: 80, damping: 30 }) // Lower stiffness
-  const springBottomY = useSpring(bottomY, { stiffness: 80, damping: 30 }) // Lower stiffness
+  // Floating particles
+  const particles = Array.from({ length: 5 }, (_, i) => ({
+    id: i,
+    size: Math.random() * 2 + 0.5,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    duration: Math.random() * 25 + 15,
+    delay: Math.random() * 5,
+  }))
+
+  // Carousel navigation
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev === founders.length - 1 ? 0 : prev + 1))
+  }
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev === 0 ? founders.length - 1 : prev - 1))
+  }
+
+  // Auto-advance carousel every 6 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      nextSlide()
+    }, 6000)
+    return () => clearInterval(timer)
+  }, [])
 
   useEffect(() => {
     setIsLoaded(true)
@@ -40,318 +92,290 @@ export function HeroSection() {
     const handleMouseMove = (e) => {
       const { clientX, clientY } = e
       const { innerWidth, innerHeight } = window
-
-      // Calculate mouse position as percentage of screen
       const x = clientX / innerWidth - 0.5
       const y = clientY / innerHeight - 0.5
-
       setMousePosition({ x, y })
     }
 
     window.addEventListener("mousemove", handleMouseMove)
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove)
-    }
+    return () => window.removeEventListener("mousemove", handleMouseMove)
   }, [])
 
   return (
     <section
       ref={heroRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 pb-8 md:pt-20 md:pb-0"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 pb-8"
       style={{
-        background: "#000000", // Solid black background
+        background: "linear-gradient(to bottom, #000000, #111111)",
       }}
     >
-      {/* Animated background grid pattern - more subtle */}
+      {/* Custom styles */}
+      <style jsx global>
+        {shadowGlowStyle}
+      </style>
+
+      {/* Background grid */}
       <div className="absolute inset-0 z-0">
         <motion.div
-          initial={{ opacity: 0, scale: 1.05 }}
-          animate={{ opacity: 0.03, scale: 1 }} // Reduced opacity
-          transition={{ duration: 2, ease: "easeOut" }} // Slower animation
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
           className="absolute inset-0"
           style={{
-            backgroundImage: `linear-gradient(to right, rgba(255, 255, 255, 0.07) 1px, transparent 1px), 
-                           linear-gradient(to bottom, rgba(255, 255, 255, 0.07) 1px, transparent 1px)`,
-            backgroundSize: "80px 80px",
+            backgroundImage: `linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px), 
+                           linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px)`,
+            backgroundSize: "100px 100px",
           }}
         ></motion.div>
 
-        {/* Subtle animated gradient overlay */}
+        {/* Gradient that responds to mouse movement */}
         <motion.div
-          className="absolute inset-0 bg-gradient-radial from-gray-900/10 via-transparent to-transparent"
+          className="absolute inset-0 bg-gradient-radial from-gray-900/50 via-transparent to-transparent"
           style={{
-            opacity: springOpacity,
-            transform: `translate3d(${mousePosition.x * -10}px, ${mousePosition.y * -10}px, 0)`, // Reduced movement
+            opacity: 0.7,
+            transform: `translate3d(${mousePosition.x * -5}px, ${mousePosition.y * -5}px, 0)`,
           }}
         ></motion.div>
       </div>
 
-      {/* Floating particles - fewer and more subtle */}
+      {/* Floating particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(6)].map(
-          (
-            _,
-            i, // Reduced number of particles
-          ) => (
-            <motion.div
-              key={i}
-              className="absolute rounded-full"
-              initial={{
-                x: Math.random() * 100 + "%",
-                y: Math.random() * 100 + "%",
-                scale: Math.random() * 0.3 + 0.3, // Smaller particles
-                opacity: 0,
-              }}
-              animate={{
-                x: `calc(${Math.random() * 100}% + ${mousePosition.x * 10}px)`, // Reduced movement
-                y: `calc(${Math.random() * 100}% + ${mousePosition.y * 10}px)`, // Reduced movement
-                opacity: Math.random() * 0.15 + 0.05, // More subtle opacity
-              }}
-              transition={{
-                duration: Math.random() * 15 + 15, // Slower movement
-                repeat: Number.POSITIVE_INFINITY,
-                repeatType: "reverse",
-                delay: Math.random() * 5,
-              }}
-              style={{
-                width: Math.random() * 3 + 1 + "px", // Smaller particles
-                height: Math.random() * 3 + 1 + "px", // Smaller particles
-                background: "linear-gradient(to right, #ffffff, #e5e5e5)",
-                boxShadow: "0 0 3px rgba(255, 255, 255, 0.05)", // Reduced glow
-              }}
-            />
-          ),
-        )}
+        {particles.map((particle) => (
+          <motion.div
+            key={particle.id}
+            className="absolute rounded-full"
+            initial={{
+              x: `${particle.x}%`,
+              y: `${particle.y}%`,
+              opacity: 0,
+            }}
+            animate={{
+              x: `calc(${particle.x}% + ${mousePosition.x * 5}px)`,
+              y: `calc(${particle.y}% + ${mousePosition.y * 5}px)`,
+              opacity: Math.random() * 0.15 + 0.05,
+            }}
+            transition={{
+              duration: particle.duration,
+              repeat: Number.POSITIVE_INFINITY,
+              repeatType: "reverse",
+              delay: particle.delay,
+              ease: "easeInOut",
+            }}
+            style={{
+              width: `${particle.size}px`,
+              height: `${particle.size}px`,
+              background: "linear-gradient(to right, #ffffff, #cccccc)",
+              boxShadow: "0 0 2px rgba(255, 255, 255, 0.1)",
+            }}
+          />
+        ))}
       </div>
 
       {/* Content Container */}
-      <div className="container mx-auto px-4 md:px-6 relative z-10 flex flex-col items-center">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-center w-full">
-          {/* Text content - first on mobile and desktop left */}
-          <div className="order-1 flex flex-col items-center lg:items-start text-center lg:text-left">
-            {/* Logo in square frame with enhanced animation */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 10 }}
-              transition={{ duration: 0.7, delay: 0.2 }} // Slower animation
-              className="self-center lg:self-start mb-4 sm:mb-6 relative"
-              style={{ y: springY1 }}
-            >
-              <motion.div
-                className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 border border-gray-800 rounded-sm flex items-center justify-center bg-black/20 shadow-sm relative overflow-hidden group backdrop-blur-sm"
-                whileHover={{ scale: 1.03 }} // More subtle hover
-                transition={{ type: "spring", stiffness: 300, damping: 15 }} // Smoother animation
-              >
-                {/* Animated border on hover - more subtle */}
-                <motion.div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100"
-                  initial={{ opacity: 0 }}
-                  whileHover={{ opacity: 1 }}
-                  transition={{ duration: 0.5 }} // Slower transition
-                >
-                  <div className="absolute inset-0 border border-gray-700/70"></div>
-                  <div className="absolute h-[1px] w-full bg-gradient-to-r from-transparent via-gray-600/50 to-transparent top-0 left-0"></div>
-                  <div className="absolute h-[1px] w-full bg-gradient-to-r from-transparent via-gray-600/50 to-transparent bottom-0 left-0"></div>
-                  <div className="absolute w-[1px] h-full bg-gradient-to-b from-transparent via-gray-600/50 to-transparent left-0 top-0"></div>
-                  <div className="absolute w-[1px] h-full bg-gradient-to-b from-transparent via-gray-600/50 to-transparent right-0 top-0"></div>
-                </motion.div>
-
-                <div
-                  className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 bg-contain bg-center bg-no-repeat relative z-10 invert brightness-200 contrast-200"
-                  style={{
-                    backgroundImage: `url(https://hebbkx1anhila5yf.public.blob.vercel-storage.com/losgos2-cnr2laMSCg9CEgZbUDH99IRnunh0F7.png)`,
-                  }}
-                ></div>
-              </motion.div>
-            </motion.div>
-
-            {/* Title with improved animation */}
+      <div className="container relative z-10 w-full px-4 sm:px-6 mx-auto my-auto max-w-6xl">
+        <div className="flex flex-col lg:flex-row items-center justify-center lg:space-x-16 xl:space-x-24">
+          {/* Text content */}
+          <div className="w-full lg:w-5/12 flex flex-col items-center lg:items-start text-center lg:text-left">
             <motion.div
               ref={titleRef}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 20 }}
-              transition={{ duration: 0.9, delay: 0.3 }} // Slower animation
-              className="mb-6 sm:mb-8 md:mb-10 w-full"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1 }}
+              className="mb-6 md:mb-10 w-full"
               style={{ y: springY1 }}
             >
-              <h1 className="text-white leading-[1.2] text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl tracking-tight font-normal">
-                <span className="block mb-1">London Quantum</span>
-                <span className="block">Universe Initiative</span>
+              {/* Logo */}
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="mb-4 md:mb-6 flex justify-center lg:justify-start"
+              >
+                <QuantumLogo
+                  size="medium"
+                  customSize={{ height: 45, width: 135 }}
+                  isWhite={true}
+                  className="sm:transform sm:scale-110 lg:scale-100"
+                />
+              </motion.div>
+
+              <h1 className="text-white leading-[1.2] text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight font-light">
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+                  className="font-sans font-light"
+                >
+                  <span className="inline-block whitespace-nowrap">London Quantum</span>
+                  <br />
+                  <span className="inline-block whitespace-nowrap">Universe Initiative</span>
+                </motion.div>
               </h1>
 
-              {/* Animated underline - more subtle */}
+              {/* Animated underline */}
               <motion.div
                 initial={{ width: 0, opacity: 0 }}
-                animate={{ width: isInView ? "80px" : 0, opacity: isInView ? 0.7 : 0 }} // Reduced width and opacity
-                transition={{ delay: 1.2, duration: 1 }} // Slower animation
-                className="h-px bg-gray-700/70 mt-4 mx-auto lg:mx-0" // Centered on mobile, left-aligned on desktop
+                animate={{ width: isInView ? "80px" : 0, opacity: isInView ? 0.5 : 0 }}
+                transition={{ delay: 0.8, duration: 1.2, ease: "easeOut" }}
+                className="h-px bg-white/50 mt-4 md:mt-6 mx-auto lg:mx-0"
               ></motion.div>
             </motion.div>
 
-            {/* Buttons with enhanced animations */}
+            {/* Buttons */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 20 }}
-              transition={{ duration: 0.9, delay: 0.5 }} // Slower animation
-              className="flex flex-col sm:flex-row justify-center lg:justify-start gap-3 sm:gap-4 w-full"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+              className="flex flex-col sm:flex-row justify-center lg:justify-start gap-3 w-full"
               style={{ y: springY1 }}
             >
               <motion.div
-                whileHover={{ scale: 1.01 }} // More subtle hover
-                whileTap={{ scale: 0.99 }} // More subtle tap
-                transition={{ type: "spring", stiffness: 300, damping: 15 }} // Smoother animation
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                transition={{ type: "spring", stiffness: 300, damping: 15 }}
                 className="w-full sm:w-auto"
               >
                 <Link
                   href="#news-events-section"
-                  className="group relative inline-flex items-center justify-center px-4 sm:px-5 py-2 bg-white text-black font-medium text-xs sm:text-sm rounded-sm overflow-hidden transition-all shadow-sm hover:shadow-md w-full sm:w-auto"
+                  className="group relative inline-flex items-center justify-center px-5 py-2.5 md:px-6 md:py-3 bg-white text-black font-medium text-sm rounded-md overflow-hidden transition-all shadow-sm hover:shadow-md w-full sm:w-auto"
                 >
                   <span className="relative z-10 flex items-center justify-center">
                     Explore our research
                     <motion.span
                       initial={{ x: 0 }}
-                      whileHover={{ x: 3 }} // More subtle movement
-                      transition={{ type: "spring", stiffness: 300, damping: 15 }} // Smoother animation
+                      whileHover={{ x: 3 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 15 }}
                     >
-                      <ArrowRight className="ml-1.5 sm:ml-2 h-3.5 w-3.5 sm:h-4 sm:w-4" /> {/* Smaller icon on mobile */}
+                      <ArrowRight className="ml-2 h-4 w-4" />
                     </motion.span>
                   </span>
 
-                  {/* Button hover effect - more subtle */}
+                  {/* Button hover effect */}
                   <motion.span
-                    className="absolute inset-0 bg-gray-100/90" // More subtle color
+                    className="absolute inset-0 bg-white/90"
                     initial={{ x: "-100%" }}
                     whileHover={{ x: 0 }}
-                    transition={{ type: "tween", ease: "easeInOut", duration: 0.4 }} // Slower animation
+                    transition={{ type: "tween", ease: "easeInOut", duration: 0.5 }}
                   />
                 </Link>
               </motion.div>
 
               <motion.div
-                whileHover={{ scale: 1.01 }} // More subtle hover
-                whileTap={{ scale: 0.99 }} // More subtle tap
-                transition={{ type: "spring", stiffness: 300, damping: 15 }} // Smoother animation
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                transition={{ type: "spring", stiffness: 300, damping: 15 }}
                 className="w-full sm:w-auto"
               >
                 <Link
                   href="#contact"
-                  className="group relative inline-flex items-center justify-center px-4 sm:px-5 py-2 border border-gray-800/80 text-white font-medium text-xs sm:text-sm rounded-sm overflow-hidden transition-all hover:bg-white/5 backdrop-blur-sm shadow-sm hover:shadow-md w-full sm:w-auto"
+                  className="group relative inline-flex items-center justify-center px-5 py-2.5 md:px-6 md:py-3 border border-white/30 text-white font-medium text-sm rounded-md overflow-hidden transition-all hover:bg-white/10 backdrop-blur-sm shadow-sm hover:shadow-md w-full sm:w-auto"
                 >
                   <span className="relative z-10">Get in touch</span>
 
-                  {/* Button hover effect - more subtle */}
+                  {/* Button hover effect */}
                   <motion.span
-                    className="absolute inset-0 bg-white/3" // More subtle color
+                    className="absolute inset-0 bg-white/10"
                     initial={{ y: "-100%" }}
                     whileHover={{ y: 0 }}
-                    transition={{ type: "tween", ease: "easeInOut", duration: 0.4 }} // Slower animation
+                    transition={{ type: "tween", ease: "easeInOut", duration: 0.5 }}
                   />
                 </Link>
               </motion.div>
             </motion.div>
           </div>
 
-          {/* Image - second on mobile, right on desktop */}
-          <div className="order-2 flex justify-center lg:justify-end mt-6 lg:mt-0">
+          {/* Carousel Image Section - carefully adjusted for alignment */}
+          <div className="w-full lg:w-6/12 flex justify-center mt-10 lg:mt-0 md:block">
             <motion.div
-              className="relative w-[75%] sm:w-[65%] md:w-[60%] lg:w-[85%]" // Responsive sizing
+              ref={carouselRef}
+              className="relative w-full max-w-lg mx-auto"
               style={{
                 y: springY2,
                 scale: springScale,
-                filter: `blur(${springBlur}px)`,
               }}
             >
-              {/* Main image container with enhanced frame */}
-              <motion.div
-                initial={{ clipPath: "inset(100% 0 0 0)" }}
-                animate={{ clipPath: isLoaded ? "inset(0% 0 0 0)" : "inset(100% 0 0 0)" }}
-                transition={{ duration: 1.2, delay: 0.6, ease: "easeInOut" }} // Slower animation
-                className="relative rounded-sm overflow-hidden shadow-md border border-red-500/10 group backdrop-blur-sm" // More subtle border
-                whileHover={{ scale: 1.01 }} // More subtle hover
-                style={{
-                  transformStyle: "preserve-3d",
-                  transform: `perspective(1000px) rotateY(${mousePosition.x * 3}deg) rotateX(${mousePosition.y * -3}deg)`, // Reduced rotation
-                  transition: "transform 0.3s ease-out", // Slower transition
-                }}
-              >
-                {/* Image with enhanced reveal effect */}
+              {/* Carousel container - adjusted padding and margins for alignment */}
+              <div className="relative rounded-lg overflow-hidden shadow-xl border border-white/20 backdrop-blur-sm group transition-all duration-300 hover:shadow-2xl hover:border-white/30">
+                {/* Carousel slides */}
                 <div className="relative aspect-[4/3] overflow-hidden">
-                  <motion.div
-                    initial={{ filter: "blur(10px)" }}
-                    animate={{ filter: isLoaded ? "blur(0px)" : "blur(10px)" }}
-                    transition={{ duration: 1.5, delay: 0.8 }} // Slower animation
-                    className="absolute inset-0"
-                  >
-                    <Image
-                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-04-08%20at%208.54.29%E2%80%AFAM-ZmpJqqviSmGxZvQAkmbkhNNdRxpdbh.png"
-                      alt="Quantum equations on chalkboard"
-                      fill
-                      className="object-cover"
-                      priority
-                    />
-                  </motion.div>
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={currentSlide}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.5, ease: "easeInOut" }}
+                      className="absolute inset-0"
+                    >
+                      <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-105">
+                        <Image
+                          src={founders[currentSlide].image || "/placeholder.svg"}
+                          alt={`${founders[currentSlide].name}'s chalkboard`}
+                          fill
+                          className="object-cover transition-all duration-700"
+                          priority
+                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 80vw, 50vw"
+                        />
 
-                  {/* Overlay with gradient - more subtle */}
-                  <motion.div
-                    initial={{ opacity: 0.4 }}
-                    animate={{ opacity: 0.15 }} // Reduced opacity
-                    transition={{ duration: 1.8, delay: 1 }} // Slower animation
-                    className="absolute inset-0 bg-gradient-to-br from-black/15 via-transparent to-black/15" // More subtle gradient
-                  ></motion.div>
+                        {/* Overlay with gradient */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-transparent to-black/40 transition-opacity duration-300 group-hover:opacity-70"></div>
+                      </div>
 
-                  {/* Hover overlay effect - more subtle */}
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-gray-500/3 to-gray-500/3 opacity-0 group-hover:opacity-100 transition-opacity duration-500" // Slower transition
-                    whileHover={{ opacity: 0.05 }} // Reduced opacity
-                  ></motion.div>
+                      {/* Refined caption with better alignment */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm py-2 px-4 text-white">
+                        <div className="flex items-center">
+                          <div className="w-0.5 h-4 bg-white/30 mr-2 rounded-full"></div>
+                          <span className="text-xs font-light tracking-wide">{founders[currentSlide].name}</span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
-              </motion.div>
+              </div>
+
+              {/* Slide indicators - with much smaller size for mobile */}
+              <div className="flex justify-center mt-3 mb-1">
+                <div className="flex space-x-2 md:space-x-3">
+                  {founders.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentSlide(index)}
+                      className="group"
+                      aria-label={`Go to slide ${index + 1}`}
+                    >
+                      <div
+                        className={`w-1 h-1 md:w-1.5 md:h-1.5 rounded-full transition-all duration-300 ${
+                          currentSlide === index
+                            ? "bg-white scale-110 shadow-glow"
+                            : "bg-white/40 group-hover:bg-white/70"
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Decorative elements - adjusted for better balance */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.7 }}
+                transition={{ delay: 1, duration: 1.5, ease: "easeOut" }}
+                className="absolute -top-3 -left-3 w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 border border-white/20 rounded-full"
+              ></motion.div>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.5 }}
+                transition={{ delay: 1.2, duration: 1.5, ease: "easeOut" }}
+                className="absolute -bottom-2 -right-2 w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 border border-white/20 rounded-full"
+              ></motion.div>
             </motion.div>
           </div>
         </div>
       </div>
 
-      {/* Transition to next section - more subtle */}
-      <motion.div
-        className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none"
-        style={{
-          opacity: springBottomOpacity,
-          y: springBottomY,
-        }}
-      >
-        {/* Línea sutil de separación en lugar de degradado */}
-        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gray-200/10"></div>
-
-        {/* Partículas sutiles que conectan con la siguiente sección */}
-        <div className="absolute bottom-0 left-0 right-0 h-12 overflow-hidden pointer-events-none">
-          {[...Array(5)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute rounded-full"
-              initial={{
-                x: Math.random() * 100 + "%",
-                y: -5,
-                width: Math.random() * 2 + 1,
-                height: Math.random() * 2 + 1,
-              }}
-              animate={{
-                y: 12,
-                opacity: [0.15, 0.05, 0],
-              }}
-              transition={{
-                duration: Math.random() * 4 + 3,
-                repeat: Number.POSITIVE_INFINITY,
-                repeatType: "loop",
-                delay: Math.random() * 3,
-              }}
-              style={{
-                background: "rgba(200, 200, 200, 0.1)",
-              }}
-            />
-          ))}
-        </div>
-      </motion.div>
+      {/* Edge gradients */}
+      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black to-transparent opacity-70"></div>
+      <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-black to-transparent opacity-50"></div>
     </section>
   )
 }

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Canadian+Aboriginal:wght@100;200;300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100;200;300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -56,7 +56,8 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground;
+    font-family: "Noto Sans", sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
@@ -66,11 +67,12 @@
   h4,
   h5,
   h6 {
-    @apply font-sans font-light tracking-tight;
+    font-family: "Noto Sans", sans-serif;
+    @apply font-light tracking-tight;
   }
 
   h1 {
-    @apply text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl;
+    @apply text-5xl sm:text-6xl md:text-7xl lg:text-8xl;
     letter-spacing: -0.03em;
   }
 
@@ -85,6 +87,14 @@
   p {
     @apply leading-relaxed;
   }
+}
+
+/* Contenedor global con márgenes explícitos */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Smooth scrolling */
@@ -210,15 +220,16 @@ html {
 /* Improved spacing for mobile */
 @media (max-width: 640px) {
   .container {
-    @apply px-4;
+    width: 92%;
+    @apply px-0;
   }
 
   section {
-    @apply py-10;
+    @apply py-4;
   }
 
   h1 {
-    @apply text-3xl;
+    @apply text-4xl;
     letter-spacing: -0.02em;
   }
 
@@ -252,20 +263,25 @@ html {
 /* Mejorar el desplazamiento en móviles */
 @media (max-width: 640px) {
   html {
-    scroll-padding-top: 70px; /* Ajustar según la altura de tu navbar */
+    scroll-padding-top: 70px;
   }
 }
 
-/* Improved spacing for tablets */
-@media (min-width: 641px) and (max-width: 1024px) {
+/* Ajustes específicos para notebooks y tablets */
+@media (min-width: 641px) and (max-width: 1366px) {
+  .container {
+    width: 90%;
+  }
+
   section {
-    @apply py-16;
+    @apply py-12;
   }
 }
 
 /* Improved spacing for desktop */
-@media (min-width: 1025px) {
+@media (min-width: 1367px) {
   .container {
+    width: 85%;
     max-width: 1280px;
   }
 }
@@ -278,4 +294,20 @@ html {
 /* Card hover effects */
 .card-hover {
   @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+}
+
+/* Contenedor con márgenes extra grandes para secciones especiales */
+.container-wide {
+  width: 92%;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Contenedor más estrecho para contenido de lectura */
+.container-narrow {
+  width: 75%;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }

@@ -43,13 +43,34 @@ export type Feature = {
   }
   
   export type Speaker = {
-    name: string;
-    photo?: { url: string };
-    universityUrl?: string;
-    isFounder?: boolean;
-    googleScholarUrl?: string;
-    biography: string;
-  };
+    name?: string
+    biography?: string | null
+    researchInterests?: string | null
+    googleScholarUrl?: string | null
+    position?: Position[] | null
+    member?: boolean | null
+    institution?: string | null
+    country?: string | null
+    photo?: {
+      url: string
+    } | null
+    phdInstitution?: string
+    nextJob?: string
+    phdSupervisor?: string
+    fellowship?: string
+    slug?: string
+    universityPosition: string
+    email: string
+    universityLogo: {
+      url: string
+    }
+  }
+
+  export enum Position {
+    PrincipalInvestigator = "principal-investigator",
+    ResearchAssociate = "research-associate",
+    PostGraduateStudent = "post-graduate-student",
+  }
   
   export type EventOrNews = {
     title: string;

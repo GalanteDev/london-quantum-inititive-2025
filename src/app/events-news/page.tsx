@@ -20,7 +20,7 @@ export default function EventsNewsPage() {
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [isLoaded, setIsLoaded] = useState(false)
-  const perPage = 9
+  const perPage = 12 // Increased from 9 to 12
 
   const searchRef = useRef<HTMLInputElement>(null)
 
@@ -107,6 +107,11 @@ export default function EventsNewsPage() {
       window.scrollTo({ top: 0, behavior: "smooth" })
     }
   }
+
+  // Debug information to show total posts available
+  console.log(
+    `Total posts: ${posts.length}, Filtered posts: ${filteredPosts.length}, Current page: ${currentPage}/${totalPages}`,
+  )
 
   return (
     <div className="min-h-screen bg-mono-50">
@@ -301,81 +306,95 @@ export default function EventsNewsPage() {
             </div>
           )}
 
-          {/* Improved Pagination */}
-          {isLoaded && totalPages > 1 && (
-            <div className="mt-10 flex justify-center items-center">
-              <div className="flex items-center gap-2 bg-white rounded-sm shadow-sm border border-mono-200 p-1">
-                {/* Previous button */}
-                <button
-                  onClick={goToPrevPage}
-                  disabled={currentPage === 1}
-                  className={`p-2 rounded-sm flex items-center justify-center ${
-                    currentPage === 1 ? "text-mono-400 cursor-not-allowed" : "text-mono-700 hover:bg-mono-100"
-                  }`}
-                  aria-label="Previous page"
-                >
-                  <ChevronLeft className="h-5 w-5" />
-                </button>
-
-                {/* Page numbers - show limited on mobile */}
-                <div className="hidden sm:flex gap-1">
-                  {Array.from({ length: totalPages }).map((_, i) => {
-                    // On larger screens, show all pages if less than 7
-                    // Otherwise show first, last, current, and pages around current
-                    const pageNum = i + 1
-                    const showPage =
-                      totalPages <= 7 || pageNum === 1 || pageNum === totalPages || Math.abs(pageNum - currentPage) <= 1
-
-                    // Show ellipsis for gaps
-                    const showEllipsisBefore = i === 1 && currentPage > 3
-                    const showEllipsisAfter = i === totalPages - 2 && currentPage < totalPages - 2
-
-                    if (showEllipsisBefore || showEllipsisAfter) {
-                      return (
-                        <span key={`ellipsis-${i}`} className="w-9 flex items-center justify-center text-mono-500">
-                          ...
-                        </span>
-                      )
-                    }
-
-                    if (showPage) {
-                      return (
-                        <button
-                          key={i}
-                          onClick={() => {
-                            setCurrentPage(pageNum)
-                            window.scrollTo({ top: 0, behavior: "smooth" })
-                          }}
-                          className={`min-w-[36px] h-9 px-3 py-1 text-sm rounded-sm ${
-                            currentPage === pageNum ? "bg-mono-900 text-white" : "text-mono-700 hover:bg-mono-100"
-                          }`}
-                        >
-                          {pageNum}
-                        </button>
-                      )
-                    }
-
-                    return null
-                  })}
-                </div>
-
-                {/* Mobile page indicator */}
-                <div className="sm:hidden px-3 py-1 text-sm text-mono-700">
-                  Page {currentPage} of {totalPages}
-                </div>
-
-                {/* Next button */}
-                <button
-                  onClick={goToNextPage}
-                  disabled={currentPage === totalPages}
-                  className={`p-2 rounded-sm flex items-center justify-center ${
-                    currentPage === totalPages ? "text-mono-400 cursor-not-allowed" : "text-mono-700 hover:bg-mono-100"
-                  }`}
-                  aria-label="Next page"
-                >
-                  <ChevronRight className="h-5 w-5" />
-                </button>
+          {/* Improved Pagination with total count */}
+          {isLoaded && (
+            <div className="mt-10 flex flex-col sm:flex-row justify-between items-center gap-4">
+              {/* Total count */}
+              <div className="text-sm text-mono-600">
+                Showing {currentPosts.length} of {filteredPosts.length} posts
+                {totalPages > 1 && ` • Page ${currentPage} of ${totalPages}`}
               </div>
+
+              {/* Pagination controls */}
+              {totalPages > 1 && (
+                <div className="flex items-center gap-2 bg-white rounded-sm shadow-sm border border-mono-200 p-1">
+                  {/* Previous button */}
+                  <button
+                    onClick={goToPrevPage}
+                    disabled={currentPage === 1}
+                    className={`p-2 rounded-sm flex items-center justify-center ${
+                      currentPage === 1 ? "text-mono-400 cursor-not-allowed" : "text-mono-700 hover:bg-mono-100"
+                    }`}
+                    aria-label="Previous page"
+                  >
+                    <ChevronLeft className="h-5 w-5" />
+                  </button>
+
+                  {/* Page numbers - show limited on mobile */}
+                  <div className="hidden sm:flex gap-1">
+                    {Array.from({ length: totalPages }).map((_, i) => {
+                      // On larger screens, show all pages if less than 7
+                      // Otherwise show first, last, current, and pages around current
+                      const pageNum = i + 1
+                      const showPage =
+                        totalPages <= 7 ||
+                        pageNum === 1 ||
+                        pageNum === totalPages ||
+                        Math.abs(pageNum - currentPage) <= 1
+
+                      // Show ellipsis for gaps
+                      const showEllipsisBefore = i === 1 && currentPage > 3
+                      const showEllipsisAfter = i === totalPages - 2 && currentPage < totalPages - 2
+
+                      if (showEllipsisBefore || showEllipsisAfter) {
+                        return (
+                          <span key={`ellipsis-${i}`} className="w-9 flex items-center justify-center text-mono-500">
+                            ...
+                          </span>
+                        )
+                      }
+
+                      if (showPage) {
+                        return (
+                          <button
+                            key={i}
+                            onClick={() => {
+                              setCurrentPage(pageNum)
+                              window.scrollTo({ top: 0, behavior: "smooth" })
+                            }}
+                            className={`min-w-[36px] h-9 px-3 py-1 text-sm rounded-sm ${
+                              currentPage === pageNum ? "bg-mono-900 text-white" : "text-mono-700 hover:bg-mono-100"
+                            }`}
+                          >
+                            {pageNum}
+                          </button>
+                        )
+                      }
+
+                      return null
+                    })}
+                  </div>
+
+                  {/* Mobile page indicator */}
+                  <div className="sm:hidden px-3 py-1 text-sm text-mono-700">
+                    Page {currentPage} of {totalPages}
+                  </div>
+
+                  {/* Next button */}
+                  <button
+                    onClick={goToNextPage}
+                    disabled={currentPage === totalPages}
+                    className={`p-2 rounded-sm flex items-center justify-center ${
+                      currentPage === totalPages
+                        ? "text-mono-400 cursor-not-allowed"
+                        : "text-mono-700 hover:bg-mono-100"
+                    }`}
+                    aria-label="Next page"
+                  >
+                    <ChevronRight className="h-5 w-5" />
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>

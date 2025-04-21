@@ -1,0 +1,378 @@
+/* Enhanced styles for the About page - inspirado en EventsNewsSection */
+
+/* Vision Card */
+.vision-card {
+  position: relative;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transition: all 0.4s ease;
+  overflow: hidden;
+}
+
+.vision-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Stats Cards */
+.stat-card {
+  position: relative;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transition: all 0.4s ease;
+  overflow: hidden;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Team Cards - Exactamente como EventsNewsSection */
+.team-card {
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.5s ease;
+}
+
+.team-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Mejorar el estilo de las imágenes para que también tengan bordes redondeados en la parte superior */
+.team-card .relative {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  overflow: hidden;
+}
+
+.team-card-image {
+  position: relative;
+  height: 40px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.team-card-image {
+  height: 160px;
+}
+
+.ra-image {
+  height: 180px;
+}
+
+.team-card-image img {
+  transition: transform 1s ease;
+  filter: grayscale(0); /* Eliminar el filtro grayscale para mostrar las fotos a color */
+}
+
+.team-card:hover .team-card-image img {
+  transform: scale(1.05);
+  filter: grayscale(0);
+}
+
+.team-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 40%, rgba(0, 0, 0, 0.1) 100%);
+  opacity: 0.7;
+  transition: opacity 0.5s ease;
+}
+
+.team-card:hover .team-card-overlay {
+  opacity: 0.6;
+}
+
+/* Mejorar el padding interno */
+.team-card > div:last-child {
+  padding: 0.875rem 1.25rem;
+}
+
+.team-card-content {
+  padding: 16px;
+}
+
+.team-card-title {
+  font-size: 1.125rem;
+  font-weight: 300;
+  color: white;
+  margin-bottom: 8px;
+  line-height: 1.3;
+  transition: color 0.5s ease;
+}
+
+.team-card:hover .team-card-title {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Información sin iconos */
+.team-card-info {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.75rem;
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.team-card-info-divider {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  margin: 0 6px;
+  vertical-align: middle;
+}
+
+.team-card-bio {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.team-card-link {
+  display: inline-flex;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.75rem;
+  font-weight: 300;
+  transition: color 0.5s ease;
+}
+
+.team-card:hover .team-card-link {
+  color: white;
+}
+
+.team-card-link-icon {
+  transition: transform 0.5s ease;
+}
+
+.team-card:hover .team-card-link-icon {
+  transform: translateX(4px);
+}
+
+/* CTA Button */
+.cta-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-weight: 500;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cta-button:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 0 10px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Divider para secciones */
+.section-divider {
+  width: 40px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 0 auto 1.5rem;
+}
+
+/* Estilos para los títulos de sección */
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Estilos para las descripciones de sección */
+.section-description {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+
+/* Separador de secciones */
+.section-separator {
+  position: relative;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
+  margin: 0;
+  overflow: visible;
+}
+
+.section-separator::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+}
+
+/* Estilos para secciones */
+.page-section {
+  position: relative;
+  padding: 3rem 0;
+}
+
+/* Versión para desktop */
+@media (min-width: 1024px) {
+  .page-section {
+    padding: 5rem 0;
+  }
+
+  .page-section.hero-section {
+    padding-top: 7rem;
+    padding-bottom: 4rem;
+  }
+
+  .section-separator {
+    margin: 1rem 0;
+  }
+}
+
+/* Versión para tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .page-section {
+    padding: 4rem 0;
+  }
+
+  .page-section.hero-section {
+    padding-top: 6rem;
+    padding-bottom: 3rem;
+  }
+
+  .section-separator {
+    margin: 0.5rem 0;
+  }
+
+  .team-card-image {
+    height: 160px;
+  }
+}
+
+/* Versión para móvil */
+@media (max-width: 767px) {
+  .page-section {
+    padding: 2.5rem 0;
+  }
+
+  .page-section.hero-section {
+    padding-top: 5rem;
+    padding-bottom: 2rem;
+  }
+
+  .section-separator {
+    margin: 0.25rem 0;
+  }
+
+  .vision-card,
+  .stat-card,
+  .team-card {
+    padding: 1rem;
+  }
+
+  .team-card-content {
+    padding: 1rem;
+  }
+
+  .section-title {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-description {
+    margin-bottom: 1.5rem;
+  }
+
+  .section-divider {
+    margin-bottom: 1rem;
+  }
+
+  .vision-card {
+    padding: 1.5rem;
+  }
+
+  .stat-card {
+    padding: 1.25rem;
+  }
+
+  .team-card-image {
+    height: 140px;
+  }
+
+  .team-card > div:last-child {
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* Ajustes adicionales para pantallas muy pequeñas */
+@media (max-width: 480px) {
+  .page-section {
+    padding: 1rem 0;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+  }
+
+  .vision-card {
+    padding: 1.25rem;
+  }
+
+  .vision-card p {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .stat-card {
+    padding: 1rem;
+  }
+}
+
+/* Estilos personalizados para ajustar el espaciado en la página de investigador */
+.researcher-hero {
+  padding-bottom: -1 !important;
+}
+
+.researcher-content {
+  margin-top: -30px !important;
+}
+
+@media (max-width: 768px) {
+  .researcher-content {
+    margin-top: -70px !important;
+  }
+}
+
