@@ -3,6 +3,7 @@ export interface Post {
   title: string
   slug: string
   date: string
+  dateTo: string
   description?: string
   mainText?: string
   tag?: string[]
@@ -15,7 +16,9 @@ export interface Post {
     width?: number
     height?: number
   }
-  speakers?: Speaker
+  speakersCollection?: {
+    items: Speaker[];  // Ahora 'speakersCollection' es un objeto con 'items' que es un arreglo de 'Speaker'
+  };
 }
 
 export type Feature = {
@@ -45,10 +48,10 @@ export type Feature = {
   export type Speaker = {
     name?: string
     biography?: string | null
-    researchInterests?: string | null
+    researchInterests?: string[] | null
     googleScholarUrl?: string | null
     position?: Position[] | null
-    member?: boolean | null
+    member?: string[]
     institution?: string | null
     country?: string | null
     photo?: {
@@ -56,11 +59,11 @@ export type Feature = {
     } | null
     phdInstitution?: string
     nextJob?: string
-    phdSupervisor?: string
+    phdSupervisor?: string[]
     fellowship?: string
     slug?: string
     universityPosition: string
-    email: string
+    email?: string  // Hacerlo opcional
     universityLogo: {
       url: string
     }

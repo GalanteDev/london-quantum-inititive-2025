@@ -24,7 +24,7 @@ export function EventTags({ tags }: Props) {
       {tagArray.map((tag) => (
         <span
           key={tag}
-          className={`inline-flex items-center px-3 py-1 rounded-md text-xs font-medium ${getCategoryColor(tag)} transition-colors hover:opacity-90`}
+          className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-black/60 text-white border-transparent backdrop-blur-sm"
         >
           {tag}
         </span>

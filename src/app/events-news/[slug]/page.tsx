@@ -4,49 +4,65 @@ import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
-import { Calendar, ArrowLeft, MapPin, Clock, Share2, ExternalLink, ArrowRight } from "lucide-react"
-import { client } from "@/lib/contentful/client"
-import { GET_POST_BY_SLUG } from "@/lib/contentful/queries"
+import { Calendar, ArrowLeft, MapPin, Share2, ExternalLink, ArrowRight } from "lucide-react"
 import { formatDate } from "@/utils/format-date"
-import { getCategoryColor } from "@/lib/utils/tags"
 import Navbar from "@/components/sections/navbar-section"
 import { FooterSection } from "@/components/sections/footer-section"
+import { ParallaxEffect } from "@/components/scroll-effects/ParallaxEffect"
 import type { Post } from "@/types"
+import { getPostBySlug } from "@/lib/contentful/fetch-posts"
 
 export default function EventNewsDetailPage() {
   const params = useParams()
   const router = useRouter()
   const [event, setEvent] = useState<Post | null>(null)
   const [isLoaded, setIsLoaded] = useState(false)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [speakers, setSpeakers] = useState<any[] | null>(null)
 
-  // Function to extract date and time in UK format
-  const getFormattedDateTime = (dateString: string) => {
-    if (!dateString) return { date: "", time: "" }
+  // Function to format a date without year
+  const formatDateWithoutYear = (dateString: string) => {
+    if (!dateString) return ""
 
     try {
       const date = new Date(dateString)
-      // Format date in English (UK)
-      const formattedDate = date.toLocaleDateString("en-GB", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
+      return date.toLocaleDateString("en-GB", {
         day: "numeric",
+        month: "long",
       })
-
-      // Format time in UK format (24h)
-      const formattedTime = date.toLocaleTimeString("en-GB", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      })
-
-      return {
-        date: formattedDate,
-        time: formattedTime,
-      }
     } catch (e) {
-      return { date: formatDate(dateString), time: "" }
+      return formatDate(dateString)
     }
+  }
+
+  // Function to format a date with year
+  const formatDateWithYear = (dateString: string) => {
+    if (!dateString) return ""
+
+    try {
+      const date = new Date(dateString)
+      return date.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+    } catch (e) {
+      return formatDate(dateString)
+    }
+  }
+
+  // Function to display date range
+  const getDateDisplay = () => {
+    if (!event?.date) return ""
+
+    // If no end date, just show start date with year
+    if (!event.dateTo) return formatDateWithYear(event.date)
+
+    // For date range, show first date without year and second date with year
+    const startDate = formatDateWithoutYear(event.date)
+    const endDate = formatDateWithYear(event.dateTo)
+
+    return `${startDate} - ${endDate}`
   }
 
   useEffect(() => {
@@ -55,13 +71,13 @@ export default function EventNewsDetailPage() {
       if (!slug) return
 
       try {
-        const response = await client.request<{ postsCollection: { items: Post[] } }>(GET_POST_BY_SLUG, { slug })
-        const item = response.postsCollection.items[0]
+        const item = await getPostBySlug(slug)
 
         if (!item) return router.push("/events-news")
 
         setEvent(item)
         setIsLoaded(true)
+        setSpeakers(item.speakersCollection?.items || null)
       } catch (err) {
         console.error("Error fetching post by slug:", err)
         router.push("/events-news")
@@ -69,228 +85,253 @@ export default function EventNewsDetailPage() {
     }
 
     fetchEvent()
+
+    // Add mouse movement tracking for interactive effects
+    const handleMouseMove = (e) => {
+      const { clientX, clientY } = e
+      const { innerWidth, innerHeight } = window
+      const x = clientX / innerWidth - 0.5
+      const y = clientY / innerHeight - 0.5
+      setMousePosition({ x, y })
+    }
+
+    window.addEventListener("mousemove", handleMouseMove)
+    return () => window.removeEventListener("mousemove", handleMouseMove)
   }, [params?.slug, router])
+
+  const isNews = Array.isArray(event?.tag)
+    ? event?.tag.some((tag) => tag.toLowerCase() === "news")
+    : event?.tag?.toLowerCase() === "news"
 
   if (!isLoaded || !event) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-mono-50">
-        <div className="text-mono-600 text-lg animate-pulse">Loading event...</div>
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <div className="text-white text-lg flex flex-col items-center">
+          <div className="w-8 h-8 border-t-2 border-r-2 border-white/40 rounded-full animate-spin mb-4"></div>
+          <span className="text-white/80">Loading content...</span>
+        </div>
       </div>
     )
   }
 
-  const { date, time } = getFormattedDateTime(event.date)
-  const speaker = event.speakers
-  const isNews = Array.isArray(event.tag)
-    ? event.tag.some((tag) => tag.toLowerCase() === "news")
-    : event.tag?.toLowerCase() === "news"
-
   return (
-    <div className="min-h-screen bg-mono-50">
+    <div className="min-h-screen bg-black text-white">
       <Navbar />
 
-      <div className="container mx-auto px-4 md:px-6 pt-24 pb-16">
-        <div className="max-w-4xl mx-auto">
+      {/* Hero Section with Parallax */}
+      <section className="pt-24 pb-4 md:pt-28 md:pb-6 relative overflow-hidden">
+        {/* Background grid */}
+        <div className="absolute inset-0 z-0">
+          <div
+            className="absolute inset-0 opacity-10"
+            style={{
+              backgroundImage: `linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px), 
+                           linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px)`,
+              backgroundSize: "80px 80px",
+            }}
+          ></div>
+        </div>
+
+        {/* Subtle background pattern with parallax effect */}
+        <ParallaxEffect speed={0.05} className="absolute inset-0 pointer-events-none">
+          <div className="absolute inset-0 opacity-5">
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px), 
+                               linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px)`,
+                backgroundSize: "40px 40px",
+              }}
+            ></div>
+          </div>
+        </ParallaxEffect>
+
+        <div className="w-[90%] max-w-4xl mx-auto px-4 md:px-6 relative z-10">
           {/* Back link */}
           <Link
             href="/events-news"
-            className="inline-flex items-center text-sm text-mono-600 hover:text-mono-900 transition-colors mb-6"
+            className="inline-flex items-center text-sm text-white/60 hover:text-white transition-colors mb-4 group"
           >
-            <ArrowLeft className="mr-2 h-4 w-4" />
+            <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
             <span className="hidden sm:inline">Back to all</span> news & events
           </Link>
 
-          {/* Main content card */}
-          <div className="bg-white rounded-sm shadow-md border border-mono-200 overflow-hidden">
-            {/* Header with image */}
-            <div className="relative">
-              {/* Tags positioned over the image */}
-              {event.tag && (
-                <div className="absolute top-4 left-4 z-10 flex flex-wrap gap-2">
-                  {Array.isArray(event.tag) ? (
-                    event.tag.map((tag) => (
-                      <span
-                        key={tag}
-                        className={`inline-flex items-center px-3 py-1 rounded-sm text-xs font-medium shadow-sm ${getCategoryColor(tag)}`}
-                      >
-                        {tag}
-                      </span>
-                    ))
-                  ) : (
+          <div>
+            {/* Tags */}
+            {event.tag && (
+              <div className="flex flex-wrap gap-2 mb-3">
+                {Array.isArray(event.tag) ? (
+                  event.tag.map((tag) => (
                     <span
-                      className={`inline-flex items-center px-3 py-1 rounded-sm text-xs font-medium shadow-sm ${getCategoryColor(event.tag)}`}
+                      key={tag}
+                      className="inline-flex items-center px-3 py-1 rounded-sm text-xs font-medium bg-black/40 text-white border border-white/10"
                     >
-                      {event.tag}
+                      {tag}
                     </span>
-                  )}
-                </div>
-              )}
-
-              {/* Featured image - much smaller height */}
-              {event.photo?.url ? (
-                <div className="relative w-full h-48 sm:h-64 md:h-72 overflow-hidden border-b border-mono-200">
-                  <Image
-                    src={event.photo.url || "/placeholder.svg"}
-                    alt={event.title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 1280px) 100vw, 1280px"
-                    priority
-                  />
-                </div>
-              ) : (
-                <div className="w-full h-24 bg-mono-100 border-b border-mono-200"></div>
-              )}
-            </div>
-
-            {/* Content */}
-            <div className="p-6 md:p-8">
-              {/* Title and meta */}
-              <div className="mb-6">
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-light tracking-tight text-mono-900 mb-4">
-                  {event.title}
-                </h1>
-
-                {/* Description */}
-                {event.description && (
-                  <div className="border-l-4 border-mono-200 pl-4 py-2">
-                    <p className="text-base md:text-lg text-mono-700">{event.description}</p>
-                  </div>
+                  ))
+                ) : (
+                  <span className="inline-flex items-center px-3 py-1 rounded-sm text-xs font-medium bg-black/40 text-white border border-white/10">
+                    {event.tag}
+                  </span>
                 )}
               </div>
+            )}
 
-              {/* Two column layout for content and details */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Main content */}
-                <div className="lg:col-span-2 order-2 lg:order-1">
-                  {/* Main Text (HTML) */}
-                  {event.mainText && (
-                    <div className="prose prose-lg max-w-none mb-8">
-                      <div
-                        dangerouslySetInnerHTML={{ __html: event.mainText }}
-                        className="prose-img:rounded-sm prose-img:mx-auto prose-headings:text-mono-800 prose-headings:font-medium"
-                      />
-                    </div>
-                  )}
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-white mb-3">
+              {event.title}
+            </h1>
+
+            {/* Meta info in a row */}
+            <div className="flex flex-wrap items-center text-sm text-white/70 gap-4 mb-4">
+              {event.date && (
+                <div className="flex items-center bg-black/40 px-3 py-1.5 rounded-sm border border-white/10 backdrop-blur-sm shadow-sm">
+                  <Calendar className="h-4 w-4 mr-1.5 text-white/70" />
+                  <span>{getDateDisplay()}</span>
                 </div>
+              )}
 
-                {/* Sidebar with event details and speaker */}
-                <div className="lg:col-span-1 order-1 lg:order-2 space-y-6">
-                  {/* Event Details (for events) */}
-                  {!isNews && (event.date || event.address) && (
-                    <div className="border border-mono-200 rounded-sm overflow-hidden">
-                      <div className="bg-mono-50 px-4 py-2 border-b border-mono-200">
-                        <h3 className="font-medium text-mono-900 text-sm">Event Details</h3>
-                      </div>
-                      <div className="p-4 space-y-4">
-                        {event.date && (
-                          <div className="flex items-start">
-                            <Calendar className="h-5 w-5 text-mono-700 mr-3 flex-shrink-0 mt-0.5" />
-                            <div>
-                              <p className="text-mono-800 font-medium text-sm">Date</p>
-                              <p className="text-mono-600 text-sm">{date}</p>
-                            </div>
-                          </div>
-                        )}
+              {event.address && (
+                <div className="flex items-center bg-black/40 px-3 py-1.5 rounded-sm border border-white/10 backdrop-blur-sm shadow-sm">
+                  <MapPin className="h-4 w-4 mr-1.5 text-white/70" />
+                  <span className="line-clamp-1">{event.address}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
 
-                        {time && (
-                          <div className="flex items-start">
-                            <Clock className="h-5 w-5 text-mono-700 mr-3 flex-shrink-0 mt-0.5" />
-                            <div>
-                              <p className="text-mono-800 font-medium text-sm">Time (UK)</p>
-                              <p className="text-mono-600 text-sm">{time}</p>
-                            </div>
-                          </div>
-                        )}
+      {/* Main Content Section */}
+      <section className="relative">
+        <div className="w-[90%] max-w-4xl mx-auto relative z-10">
+          <div>
+            {/* Description */}
+            {event.description && (
+              <div className="mb-8 bg-black/40 p-6 rounded-sm border border-white/25 backdrop-blur-sm shadow-md">
+                <p className="text-lg md:text-xl text-white/90 leading-relaxed">{event.description}</p>
+              </div>
+            )}
+            {/* Featured image */}
+            {event.photo?.url && (
+              <div className="relative w-full h-64 sm:h-80 md:h-96 mb-8 overflow-hidden rounded-sm border border-white/15 shadow-lg">
+                <Image
+                  src={event.photo.url || "/placeholder.svg"}
+                  alt={event.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1280px) 100vw, 1280px"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+              </div>
+            )}
 
-                        {event.address && (
-                          <div className="flex items-start">
-                            <MapPin className="h-5 w-5 text-mono-700 mr-3 flex-shrink-0 mt-0.5" />
-                            <div>
-                              <p className="text-mono-800 font-medium text-sm">Location</p>
-                              <p className="text-mono-600 text-sm">{event.address}</p>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
+            {/* Main Text (HTML) */}
+            {event.mainText && (
+              <div className="prose prose-invert prose-lg max-w-none bg-black/20 p-6 rounded-sm border border-white/5">
+                <div
+                  dangerouslySetInnerHTML={{ __html: event.mainText }}
+                  className="prose-img:rounded-sm prose-img:mx-auto prose-headings:text-white prose-headings:font-light prose-p:text-white/80"
+                />
+              </div>
+            )}
 
-                  {/* Speaker (for events) */}
-                  {speaker && !isNews && (
-                    <div className="border border-mono-200 rounded-sm overflow-hidden">
-                      <div className="bg-mono-50 px-4 py-2 border-b border-mono-200">
-                        <h3 className="font-medium text-mono-900 text-sm">Speaker</h3>
-                      </div>
-                      <div className="p-4">
-                        <div className="flex items-center gap-4 mb-3">
-                          {speaker.photo?.url && (
-                            <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border border-mono-200">
-                              <Image
-                                src={speaker.photo.url || "/placeholder.svg"}
-                                alt={speaker.name}
-                                width={48}
-                                height={48}
-                                className="object-cover w-full h-full"
-                              />
-                            </div>
-                          )}
-                          <div>
-                            <p className="font-medium text-mono-900">{speaker.name}</p>
-                          </div>
+            {/* Speaker list */}
+            {speakers && speakers.length > 0 && (
+              <div className="mt-10 mb-8">
+                <h2 className="text-2xl font-light text-white mb-5 flex items-center">
+                  <span className="w-8 h-px bg-white/30 mr-3"></span>
+                  {Array.isArray(event.tag) && event.tag.includes("Events") ? "LQ Members Involved" : "Researchers"}
+                </h2>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {speakers.map((speaker, index) => (
+                    <div
+                      key={index}
+                      className="bg-black/40 rounded-sm overflow-hidden border border-white/10 p-5 flex items-start gap-5 hover:border-white/20 transition-colors duration-300 backdrop-blur-sm shadow-md"
+                    >
+                      {speaker.photo?.url && (
+                        <div className="w-20 h-20 rounded-sm overflow-hidden flex-shrink-0 border border-white/20 shadow-sm">
+                          <Image
+                            src={speaker.photo.url || "/placeholder.svg"}
+                            alt={speaker.name || "Speaker"}
+                            width={80}
+                            height={80}
+                            className="object-cover w-full h-full"
+                          />
                         </div>
+                      )}
+                      <div className="flex-1">
+                        <Link
+                          className="font-medium text-white text-lg mb-2 hover:text-white/80 transition-colors inline-block"
+                          href={`/about/${speaker.name?.toLowerCase().replace(/\s+/g, "-")}` || ""}
+                        >
+                          {speaker.name}
+                        </Link>
 
-                        <div className="flex flex-wrap gap-3 mb-3">
-                          {speaker.universityUrl && (
-                            <a
-                              href={speaker.universityUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs text-mono-900 hover:text-mono-600 inline-flex items-center gap-1 transition-colors"
-                            >
-                              University Profile <ExternalLink className="h-3 w-3" />
-                            </a>
-                          )}
+                        <div className="w-12 h-px bg-white/20 my-2"></div>
 
+                        {/* Institución si está disponible */}
+                        {speaker.institution && <p className="text-white/80 text-sm mb-2">{speaker.institution}</p>}
+
+                        {/* Biografía del speaker */}
+                        {speaker.biography && (
+                          <p className="text-white/60 text-sm mb-3 line-clamp-3">{speaker.biography}</p>
+                        )}
+
+                        <div className="flex flex-wrap gap-2 mt-3">
+                          {/* Verifica si hay un enlace de Google Scholar */}
                           {speaker.googleScholarUrl && (
                             <a
                               href={speaker.googleScholarUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-xs text-mono-900 hover:text-mono-600 inline-flex items-center gap-1 transition-colors"
+                              className="text-xs text-white/80 hover:text-white inline-flex items-center gap-1 transition-colors bg-white/10 px-2.5 py-1.5 rounded-sm hover:bg-white/15"
                             >
-                              Google Scholar <ExternalLink className="h-3 w-3" />
+                              Google Scholar
+                              <ExternalLink className="h-3 w-3 ml-1" />
+                            </a>
+                          )}
+
+                          {/* Enlace a la universidad si está disponible */}
+                          {speaker.universityUrl && (
+                            <a
+                              href={speaker.universityUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-white/80 hover:text-white inline-flex items-center gap-1 transition-colors bg-white/10 px-2.5 py-1.5 rounded-sm hover:bg-white/15"
+                            >
+                              University Profile
+                              <ExternalLink className="h-3 w-3 ml-1" />
                             </a>
                           )}
                         </div>
-
-                        {speaker.biography && <p className="text-xs text-mono-700 mt-2">{speaker.biography}</p>}
                       </div>
                     </div>
-                  )}
+                  ))}
                 </div>
               </div>
+            )}
 
-              {/* Footer */}
-              <div className="flex flex-col sm:flex-row justify-between items-center mt-8 pt-6 border-t border-mono-200 gap-4">
-                <button className="inline-flex items-center text-sm text-mono-600 hover:text-mono-900 transition-colors">
-                  <Share2 className="h-4 w-4 mr-2" />
-                  Share this{" "}
-                  {Array.isArray(event.tag) ? event.tag[0]?.toLowerCase() : event.tag?.toLowerCase() || "event"}
-                </button>
+            {/* Footer with share and back to all events */}
+            <div className="mt-12 pt-6 border-t border-white/15 flex flex-col sm:flex-row justify-between items-center gap-4">
+              <button className="inline-flex items-center text-sm text-white/70 hover:text-white transition-colors bg-black/30 px-4 py-2.5 rounded-sm border border-white/10 hover:border-white/20 shadow-sm">
+                <Share2 className="h-4 w-4 mr-2" />
+                Share this{" "}
+                {Array.isArray(event.tag) ? event.tag[0]?.toLowerCase() : event.tag?.toLowerCase() || "event"}
+              </button>
 
-                <Link
-                  href="/events-news"
-                  className="inline-flex items-center px-5 py-2.5 bg-mono-900 text-white text-sm font-medium rounded-sm hover:bg-mono-800 transition-colors"
-                >
-                  View all news & events
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </div>
+              <Link
+                href="/events-news"
+                className="inline-flex items-center px-5 py-2.5 bg-black/50 text-white text-sm font-medium rounded-sm hover:bg-black/70 transition-colors border border-white/15 hover:border-white/25 shadow-sm group"
+              >
+                View all news & events
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       <FooterSection />
     </div>

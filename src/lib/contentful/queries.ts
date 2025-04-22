@@ -7,6 +7,7 @@ export const GET_ALL_POSTS = gql`
         title
         slug
         date
+        dateTo
         description
         tag
         photo {
@@ -19,32 +20,27 @@ export const GET_ALL_POSTS = gql`
 
 export const GET_POST_BY_SLUG = gql`
   query GetPostBySlug($slug: String!) {
-    postsCollection(where: { slug: $slug }, locale: "en-US") {
+    postsCollection(where: { slug: $slug }, limit: 1) {
       items {
         title
         slug
         date
+        dateTo
         showInNews
         description
         mainText
         address
         photo {
           url
-          title
-          description
-          width
-          height
         }
         tag
-        speakers {
-          ... on Speakers {
-            name
-            biography
-            universityUrl
-            isFounder
-            googleScholarUrl
-            photo {
-              url
+        speakersCollection {
+          items {
+            ... on Speakers {
+              name
+              photo {
+                url
+              }
             }
           }
         }
@@ -53,6 +49,51 @@ export const GET_POST_BY_SLUG = gql`
   }
 `;
 
+
+// export const GET_POST_BY_SLUG = gql`
+//   query GetPostBySlug($slug: String!) {
+//     postsCollection(where: { slug: $slug }, locale: "en-US") {
+//       items {
+//         title
+//         slug
+//         date
+//         showInNews
+//         description
+//         mainText
+//         address
+//         photo {
+//           url
+//         }
+//         tag
+//         speakers {
+//           ... on Speakers {
+//             name
+//             photo {
+//               url
+//             }
+//             biography
+//             researchInterests
+//             googleScholarUrl
+//             position
+//             member
+//             institution
+//             country
+//             nextJob
+//             phdInstitution
+//             slug
+//             phdSupervisor
+//             fellowship
+//             universityPosition
+//             universityLogo {
+//               url
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+// `;
+
 export const GET_HIGHLIGHTED_POSTS = gql`
   query GetHighlightedPosts {
     postsCollection(where: { showInNews: true }, order: date_DESC, limit: 100) {
@@ -60,6 +101,7 @@ export const GET_HIGHLIGHTED_POSTS = gql`
         title
         slug
         date
+        dateTo
         tag
         showInNews
         description
