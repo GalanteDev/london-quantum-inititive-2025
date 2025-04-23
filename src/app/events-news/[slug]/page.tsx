@@ -16,6 +16,7 @@ export default function EventNewsDetailPage() {
   const [event, setEvent] = useState<Post | null>(null)
   const [isLoaded, setIsLoaded] = useState(false)
   const [speakers, setSpeakers] = useState<any[] | null>(null)
+  const [referrer, setReferrer] = useState<string | null>(null)
 
   // Function to format a date without year
   const formatDateWithoutYear = (dateString: string) => {
@@ -65,12 +66,38 @@ export default function EventNewsDetailPage() {
   }
 
   // Function to handle back button click
-  const handleBackClick = (e: React.FormEvent) => {
+  const handleBackClick = (e : React.FormEvent) => {
     e.preventDefault()
     router.back()
   }
 
+  // Determine the URL for "View all news & events" based on the event type
+  const getViewAllUrl = () => {
+    if (!event) return "/events-news"
+
+    // Check if the event has a tag "Events" or "Papers"
+    const tag = Array.isArray(event.tag) ? event.tag.find((t) => t === "Events" || t === "Papers") : event.tag
+
+    // If coming from research page and it's an event, apply filter
+    if (referrer?.includes("/research") && tag === "Events") {
+      return "/events-news?filter=Events"
+    }
+
+    // If it's a paper, apply Papers filter
+    if (tag === "Papers") {
+      return "/events-news?filter=Papers"
+    }
+
+    // Default case
+    return "/events-news"
+  }
+
   useEffect(() => {
+    // Store the referrer when component mounts
+    if (document.referrer) {
+      setReferrer(document.referrer)
+    }
+
     const fetchEvent = async () => {
       const slug = params?.slug as string
       if (!slug) return
@@ -102,6 +129,14 @@ export default function EventNewsDetailPage() {
       </div>
     )
   }
+
+  // Determine the button text based on the event type
+  const viewAllButtonText =
+    Array.isArray(event.tag) && event.tag.includes("Events")
+      ? "View all events"
+      : Array.isArray(event.tag) && event.tag.includes("Papers")
+        ? "View all papers"
+        : "View all news & events"
 
   return (
     <div className="bg-black text-white">
@@ -140,7 +175,7 @@ export default function EventNewsDetailPage() {
             className="inline-flex items-center text-sm text-white/60 hover:text-white transition-colors mb-4 group bg-transparent border-0 cursor-pointer"
           >
             <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
-            <span className="hidden sm:inline">Back to all</span> news & events
+            <span className="hidden sm:inline">Back to</span> previous page
           </button>
 
           {/* Tags */}
@@ -306,12 +341,12 @@ export default function EventNewsDetailPage() {
               Share this {event.tag}
             </button>
 
-            {/* Link to all news & events */}
+            {/* Link to all news & events with dynamic URL based on context */}
             <Link
-              href="/events-news"
+              href={getViewAllUrl()}
               className="inline-flex items-center px-4 py-2 bg-black/30 text-white text-xs font-medium rounded-sm hover:bg-black/40 transition-colors border border-white/10 hover:border-white/15 group"
             >
-              View all news & events
+              {viewAllButtonText}
               <ArrowRight className="ml-1.5 h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
             </Link>
           </div>

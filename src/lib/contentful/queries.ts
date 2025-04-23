@@ -192,7 +192,7 @@ export const GET_EVENTS_POSTS = gql`
 
 export const GET_PAPERS_POSTS = gql`
   query GetPapersPosts {
-    postsCollection(where: { tag_contains_some: ["Research"] }, order: date_DESC, limit: 100) {
+    postsCollection(where: { tag_contains_some: ["Paper"] }, order: date_DESC, limit: 100) {
       items {
         title
         slug

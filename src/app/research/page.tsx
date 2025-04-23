@@ -335,16 +335,16 @@ export default function ResearchPage() {
             </div>
           )}
 
-          <div className="mt-12 text-center">
+              <div className="mt-12 text-center">
             <Link
-              href="/publications"
+              href="/events-news?filter=Paper"
               className="inline-flex items-center px-6 py-3 bg-white/10 text-white text-sm font-medium hover:bg-white/15 transition-colors border border-white/10 group"
             >
               View all publications
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
+            </div>
           </div>
-        </div>
       </section>
 
       {/* Event Organization Section */}
@@ -380,7 +380,7 @@ export default function ResearchPage() {
                     duration={0.8}
                   >
                     <Link
-                      href={`/events-news/${event.slug}`}
+                      href={`/events-news/${event.slug}?from=research`}
                       aria-label={`Learn more about ${event.title}`}
                       className="block h-full"
                     >
@@ -450,7 +450,7 @@ export default function ResearchPage() {
 
           <div className="mt-12 text-center">
             <Link
-              href="/events-news"
+              href="/events-news?filter=Events"
               className="inline-flex items-center px-6 py-3 bg-white/10 text-white text-sm font-medium hover:bg-white/15 transition-colors border border-white/10 group"
             >
               View all events
