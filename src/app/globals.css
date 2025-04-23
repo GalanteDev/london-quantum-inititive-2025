@@ -91,7 +91,7 @@
 
 /* Contenedor global con márgenes explícitos */
 .container {
-  width: 90%;
+  width: 100%;
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
@@ -270,7 +270,7 @@ html {
 /* Ajustes específicos para notebooks y tablets */
 @media (min-width: 641px) and (max-width: 1366px) {
   .container {
-    width: 90%;
+    width: 100%;
   }
 
   section {

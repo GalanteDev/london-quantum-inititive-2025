@@ -6,12 +6,9 @@ import Link from "next/link";
 import { motion, useInView, useScroll, useTransform, useSpring } from "framer-motion";
 import Navbar from "@/components/sections/navbar-section";
 import { FooterSection } from "@/components/sections/footer-section";
-import { FadeInOnScroll } from "@/components/scroll-effects/FadeInOnScroll";
 import { QuantumLogo } from "@/components/ui/quantum-logo";
-import { ParallaxEffect } from "@/components/scroll-effects/ParallaxEffect";
 import { getCollaborators } from "@/lib/contentful/fetch-posts";
 import { Position, type Speaker } from "@/types";
-import { ChevronRight } from "@/components/ui/notions-icons";
 import { ArrowRight } from "lucide-react";
 import "./about.css";
 
