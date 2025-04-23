@@ -27,12 +27,12 @@ const founders = [
   },
   {
     name: "Dr. Dionysios Anninos",
-    title: "Quantum Field Theorist",
+    title: "Theoretical Physicist",
     image: "/images/heroback.png", // Actualizado
   },
   {
     name: "Dr. Damian Galante",
-    title: "Cosmologist & String Theorist",
+    title: "Theoretical Physicist",
     image: "/images/heroback.png", // Actualizado
   },
 ]
