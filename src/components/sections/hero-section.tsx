@@ -385,17 +385,6 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Mobile scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.7 }}
-        transition={{ delay: 2, duration: 1 }}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white/50 md:hidden"
-      >
-        <span className="text-xs mb-2">Scroll down</span>
-        <ChevronDown className="h-4 w-4 animate-bounce" />
-      </motion.div>
-
       {/* Edge gradients */}
       <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black to-transparent opacity-70"></div>
       <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-black to-transparent opacity-50"></div>
