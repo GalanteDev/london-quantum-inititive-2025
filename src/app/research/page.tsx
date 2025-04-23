@@ -100,7 +100,7 @@ export default function ResearchPage() {
     <div className="min-h-screen bg-black text-white">
       <Navbar />
 
-      {/* Hero Section */}
+      {/* Hero Section - Mejorado con imagen impactante */}
       <section ref={heroRef} className="pt-24 pb-16 md:pt-28 md:pb-20 relative overflow-hidden">
         {/* Background grid */}
         <div className="absolute inset-0 z-0">
@@ -128,19 +128,73 @@ export default function ResearchPage() {
           </div>
         </ParallaxEffect>
 
+        {/* Nueva imagen de fondo con efecto parallax */}
+        <div className="absolute inset-0 z-0 opacity-30">
+          <Image
+            src="https://images.unsplash.com/photo-1534996858221-380b92700493?q=80&w=3431&auto=format&fit=crop"
+            alt="Quantum physics visualization"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/80"></div>
+        </div>
+
         <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            {/* Contenido de texto */}
+            <div className="md:w-1/2">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={isHeroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+              >
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-tight mb-6">
+                  Research
+                </h1>
+                <div className="w-16 h-px bg-white/30 mb-6"></div>
+                <p className="text-lg sm:text-xl text-white/80 mb-8 leading-relaxed">
+                  The London Quantum Universe Initiative is dedicated to advancing our understanding of the fundamental
+                  nature of reality through innovative theoretical research in quantum physics and cosmology.
+                </p>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={isHeroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                  transition={{ duration: 0.6, delay: 0.6 }}
+                >
+                  <Link
+                    href="#research-interests"
+                    className="inline-flex items-center px-5 py-2.5 bg-white/10 text-white border border-white/20 rounded-sm hover:bg-white/20 transition-all duration-300 group"
+                  >
+                    Explore our research
+                    <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                  </Link>
+                </motion.div>
+              </motion.div>
+            </div>
+
+            {/* Imagen destacada */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={isHeroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+              className="md:w-1/2"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={isHeroInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
+              transition={{ duration: 1, delay: 0.4 }}
             >
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-tight mb-6">Research</h1>
-              <div className="w-16 h-px bg-white/30 mx-auto mb-6"></div>
-              <p className="text-lg sm:text-xl text-white/80 mb-8 leading-relaxed">
-                The London Quantum Universe Initiative is dedicated to advancing our understanding of the fundamental
-                nature of reality through innovative theoretical research in quantum physics and cosmology.
-              </p>
+              <div className="relative rounded-sm overflow-hidden border border-white/10 shadow-2xl">
+                <Image
+                  src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2070&auto=format&fit=crop"
+                  alt="Quantum research visualization"
+                  width={600}
+                  height={400}
+                  className="object-cover w-full aspect-[4/3]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 p-4">
+                  <div className="bg-black/60 backdrop-blur-sm px-3 py-2 rounded-sm inline-block">
+                    <span className="text-xs text-white/70">Quantum Gravity Research</span>
+                  </div>
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
@@ -161,7 +215,11 @@ export default function ResearchPage() {
       </section>
 
       {/* Research Interests Section */}
-      <section ref={interestsRef} className="py-16 md:py-20 relative overflow-hidden border-t border-white/10">
+      <section
+        id="research-interests"
+        ref={interestsRef}
+        className="py-16 md:py-20 relative overflow-hidden border-t border-white/10"
+      >
         {/* Subtle background pattern with parallax effect */}
         <ParallaxEffect speed={0.03} className="absolute inset-0 pointer-events-none">
           <div className="absolute inset-0 opacity-5">
@@ -335,7 +393,7 @@ export default function ResearchPage() {
             </div>
           )}
 
-              <div className="mt-12 text-center">
+          <div className="mt-12 text-center">
             <Link
               href="/events-news?filter=Paper"
               className="inline-flex items-center px-6 py-3 bg-white/10 text-white text-sm font-medium hover:bg-white/15 transition-colors border border-white/10 group"
@@ -343,8 +401,8 @@ export default function ResearchPage() {
               View all publications
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
-            </div>
           </div>
+        </div>
       </section>
 
       {/* Event Organization Section */}

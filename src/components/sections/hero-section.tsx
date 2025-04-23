@@ -23,17 +23,17 @@ const founders = [
   {
     name: "Dr. Tarek Anous",
     title: "Theoretical Physicist",
-    image: "/images/heroback.png", // Using the same image for now
+    image: "/images/heroback.png", // Actualizado
   },
   {
     name: "Dr. Dionysios Anninos",
     title: "Quantum Field Theorist",
-    image: "/images/heroback.png", // Using the same image for now
+    image: "/images/heroback.png", // Actualizado
   },
   {
     name: "Dr. Damian Galante",
     title: "Cosmologist & String Theorist",
-    image: "/images/heroback.png", // Using the same image for now
+    image: "/images/heroback.png", // Actualizado
   },
 ]
 
@@ -89,7 +89,7 @@ export function HeroSection() {
   useEffect(() => {
     setIsLoaded(true)
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handleMouseMove = (e) => {
       const { clientX, clientY } = e
       const { innerWidth, innerHeight } = window
       const x = clientX / innerWidth - 0.5
@@ -104,7 +104,7 @@ export function HeroSection() {
   return (
     <section
       ref={heroRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 pb-8"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-8"
       style={{
         background: "linear-gradient(to bottom, #000000, #111111)",
       }}
@@ -136,6 +136,18 @@ export function HeroSection() {
             transform: `translate3d(${mousePosition.x * -5}px, ${mousePosition.y * -5}px, 0)`,
           }}
         ></motion.div>
+      </div>
+
+      {/* Nueva imagen de fondo con efecto parallax */}
+      <div className="absolute inset-0 z-0 opacity-40">
+        <Image
+          src="https://images.unsplash.com/photo-1462332420958-a05d1e002413?q=80&w=2070&auto=format&fit=crop"
+          alt="Type Ia supernova explosion"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/80 to-black/80"></div>
       </div>
 
       {/* Floating particles */}
@@ -172,16 +184,16 @@ export function HeroSection() {
       </div>
 
       {/* Content Container */}
-      <div className="container relative z-10 w-full px-4 sm:px-6 mx-auto my-auto max-w-6xl">
-        <div className="flex flex-col lg:flex-row items-center justify-center lg:space-x-16 xl:space-x-24">
+      <div className="container relative z-10 w-full mx-auto my-auto">
+        <div className="flex flex-col lg:flex-row items-center justify-between xl:gap-16">
           {/* Text content */}
-          <div className="w-full lg:w-5/12 flex flex-col items-center lg:items-start text-center lg:text-left">
+          <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left">
             <motion.div
               ref={titleRef}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1 }}
-              className="mb-6 md:mb-10 w-full pt-3"
+              className="mb-6 md:mb-10 w-full"
               style={{ y: springY1 }}
             >
               {/* Logo */}
@@ -189,7 +201,7 @@ export function HeroSection() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
-                className="mb-4 pt-1 sm:pt-0 md:mb-6 flex justify-center lg:justify-start"
+                className="mb-4 md:mb-6 flex justify-center lg:justify-start"
               >
                 <QuantumLogo
                   size="medium"
@@ -226,7 +238,7 @@ export function HeroSection() {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-              className="flex flex-col sm:flex-row justify-center lg:justify-start gap-3 w-full"
+              className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 w-full"
               style={{ y: springY1 }}
             >
               <motion.div
@@ -285,17 +297,17 @@ export function HeroSection() {
           </div>
 
           {/* Carousel Image Section - carefully adjusted for alignment */}
-          <div className="w-full lg:w-6/12 flex justify-center mt-10 lg:mt-0 md:block">
+          <div className="w-full lg:w-1/2 flex justify-center lg:justify-end mt-10 lg:mt-0 md:block">
             <motion.div
               ref={carouselRef}
-              className="relative w-full max-w-lg mx-auto"
+              className="relative w-full max-w-xl mx-auto lg:mx-0"
               style={{
                 y: springY2,
                 scale: springScale,
               }}
             >
               {/* Carousel container - adjusted padding and margins for alignment */}
-              <div className="relative rounded-lg overflow-hidden shadow-xl border border-white/20 backdrop-blur-sm group transition-all duration-300 hover:shadow-2xl hover:border-white/30">
+              <div className="relative rounded-lg overflow-hidden shadow-xl border border-white/20 backdrop-blur-sm group transition-all duration-300 hover:shadow-2xl hover:border-white/30 w-full">
                 {/* Carousel slides */}
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <AnimatePresence mode="wait">
@@ -322,10 +334,10 @@ export function HeroSection() {
                       </div>
 
                       {/* Refined caption with better alignment */}
-                      <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm py-2 px-4 text-white">
-                        <div className="flex items-center">
-                          <div className="w-0.5 h-4 bg-white/30 mr-2 rounded-full"></div>
-                          <span className="text-xs font-light tracking-wide">{founders[currentSlide].name}</span>
+                      <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm py-3 px-4 text-white">
+                        <div className="flex flex-col">
+                          <span className="text-base font-medium tracking-wide">{founders[currentSlide].name}</span>
+                          <span className="text-sm text-white/70">{founders[currentSlide].title}</span>
                         </div>
                       </div>
                     </motion.div>
@@ -334,8 +346,8 @@ export function HeroSection() {
               </div>
 
               {/* Slide indicators - with much smaller size for mobile */}
-              <div className="flex justify-center mt-3 mb-2">
-                <div className="flex space-x-2 md:space-x-3">
+              <div className="flex justify-center mt-4 mb-2">
+                <div className="flex space-x-3">
                   {founders.map((_, index) => (
                     <button
                       key={index}
@@ -344,7 +356,7 @@ export function HeroSection() {
                       aria-label={`Go to slide ${index + 1}`}
                     >
                       <div
-                        className={`w-1 h-1 md:w-1.5 md:h-1.5 rounded-full transition-all duration-300 ${
+                        className={`w-2 h-2 rounded-full transition-all duration-300 ${
                           currentSlide === index
                             ? "bg-white scale-110 shadow-glow"
                             : "bg-white/40 group-hover:bg-white/70"
@@ -372,6 +384,17 @@ export function HeroSection() {
           </div>
         </div>
       </div>
+
+      {/* Mobile scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.7 }}
+        transition={{ delay: 2, duration: 1 }}
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white/50 md:hidden"
+      >
+        <span className="text-xs mb-2">Scroll down</span>
+        <ChevronDown className="h-4 w-4 animate-bounce" />
+      </motion.div>
 
       {/* Edge gradients */}
       <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black to-transparent opacity-70"></div>
