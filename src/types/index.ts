@@ -8,6 +8,7 @@ export interface Post {
   mainText?: string
   tag?: string[]
   pageUrl?: string
+  organizedByLqui?: boolean
   address?: string
   showInNews?: boolean
   photo?: {

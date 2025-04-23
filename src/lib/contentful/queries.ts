@@ -180,6 +180,7 @@ export const GET_EVENTS_POSTS = gql`
         title
         slug
         date
+        organizedByLqui
         dateTo
         tag
         description

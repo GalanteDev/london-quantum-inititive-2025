@@ -96,6 +96,8 @@ export default function ResearchPage() {
     loadData()
   }, [])
 
+  const lquiEvents = events.filter((event) => event.organizedByLqui)
+
   return (
     <div className="min-h-screen bg-black text-white">
       <Navbar />
@@ -429,7 +431,7 @@ export default function ResearchPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               {events.length > 0 ? (
-                events.map((event, index) => (
+                lquiEvents.map((event, index) => (
                   <FadeInOnScroll
                     key={event.slug}
                     threshold={0.1}
