@@ -1,118 +1,205 @@
-"use client";
+"use client"
 
-import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { motion, useInView, useScroll, useTransform, useSpring } from "framer-motion";
-import Navbar from "@/components/sections/navbar-section";
-import { FooterSection } from "@/components/sections/footer-section";
-import { QuantumLogo } from "@/components/ui/quantum-logo";
-import { getCollaborators } from "@/lib/contentful/fetch-posts";
-import { Position, type Speaker } from "@/types";
-import { ArrowRight } from "lucide-react";
-import "./about.css";
+import { useEffect, useRef, useState } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { motion, useInView, useScroll, useTransform, useSpring } from "framer-motion"
+import Navbar from "@/components/sections/navbar-section"
+import { FooterSection } from "@/components/sections/footer-section"
+import { QuantumLogo } from "@/components/ui/quantum-logo"
+import { getCollaborators } from "@/lib/contentful/fetch-posts"
+import { Position, type Speaker } from "@/types"
+import { ArrowRight } from "lucide-react"
+import "./about.css"
 
 // Función para extraer el apellido de un nombre completo
 const getLastName = (fullName: string): string => {
-  const parts = fullName.trim().split(" ");
-  return parts[parts.length - 1].toLowerCase();
-};
+  const parts = fullName.trim().split(" ")
+  return parts[parts.length - 1].toLowerCase()
+}
 
 // Función para ordenar por apellido
 const sortByLastName = (a: Speaker, b: Speaker): number => {
-  const lastNameA = getLastName(a.name || "");
-  const lastNameB = getLastName(b.name || "");
-  return lastNameA.localeCompare(lastNameB);
-};
+  const lastNameA = getLastName(a.name || "")
+  const lastNameB = getLastName(b.name || "")
+  return lastNameA.localeCompare(lastNameB)
+}
 
 // Función para obtener la URL del supervisor
 const getSupervisorUrl = (supervisor: string) => {
-  const supervisorLower = supervisor.toLowerCase();
+  const supervisorLower = supervisor.toLowerCase()
   if (supervisorLower === "galante") {
-    return "/about/damian-galante";
+    return "/about/damian-galante"
   }
   if (supervisorLower === "anninos") {
-    return "/about/dionysios-anninos";
+    return "/about/dionysios-anninos"
   }
   if (supervisorLower === "anous") {
-    return "/about/tarek-anous";
+    return "/about/tarek-anous"
   }
-  return ""; // Retorna una URL vacía si no hay coincidencia
-};
+  return "" // Retorna una URL vacía si no hay coincidencia
+}
+
+// Modificar el componente TeamStatsCounter para que la animación solo se ejecute una vez
+const TeamStatsCounter = ({ counts }: { counts: { [key: string]: number } }) => {
+  const [displayCounts, setDisplayCounts] = useState({
+    principalInvestigators: 0,
+    researchAssociates: 0,
+    postGraduateStudents: 0,
+  })
+  const [animationCompleted, setAnimationCompleted] = useState(false)
+  const counterRef = useRef(null)
+  const isInView = useInView(counterRef, { once: true, amount: 0.3 })
+
+  useEffect(() => {
+    // Solo ejecutar la animación si está en vista y no se ha completado antes
+    if (isInView && !animationCompleted) {
+      const duration = 2000 // duración de la animación en ms
+      const steps = 50 // número de pasos para la animación
+      const interval = duration / steps
+
+      const incrementValues = {
+        principalInvestigators: counts.principalInvestigators / steps,
+        researchAssociates: counts.researchAssociates / steps,
+        postGraduateStudents: counts.postGraduateStudents / steps,
+      }
+
+      let currentStep = 0
+
+      const timer = setInterval(() => {
+        currentStep++
+
+        if (currentStep >= steps) {
+          setDisplayCounts({
+            principalInvestigators: counts.principalInvestigators,
+            researchAssociates: counts.researchAssociates,
+            postGraduateStudents: counts.postGraduateStudents,
+          })
+          setAnimationCompleted(true)
+          clearInterval(timer)
+        } else {
+          setDisplayCounts({
+            principalInvestigators: Math.round(incrementValues.principalInvestigators * currentStep),
+            researchAssociates: Math.round(incrementValues.researchAssociates * currentStep),
+            postGraduateStudents: Math.round(incrementValues.postGraduateStudents * currentStep),
+          })
+        }
+      }, interval)
+
+      return () => clearInterval(timer)
+    }
+  }, [isInView, counts, animationCompleted])
+
+  return (
+    <div
+      ref={counterRef}
+      className="stats-counter-container py-8 md:py-10 bg-black/30 backdrop-blur-sm border border-white/10 rounded-md"
+    >
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="counter-item text-center px-4">
+          <div className="counter-value text-4xl md:text-5xl lg:text-6xl font-light text-white mb-2">
+            {displayCounts.principalInvestigators}
+          </div>
+          <div className="counter-label text-sm md:text-base text-white/70 uppercase tracking-wider">
+            Principal Investigators
+          </div>
+        </div>
+
+        <div className="counter-item text-center px-4 md:border-x border-white/10">
+          <div className="counter-value text-4xl md:text-5xl lg:text-6xl font-light text-white mb-2">
+            {displayCounts.researchAssociates}
+          </div>
+          <div className="counter-label text-sm md:text-base text-white/70 uppercase tracking-wider">
+            Research Associates
+          </div>
+        </div>
+
+        <div className="counter-item text-center px-4">
+          <div className="counter-value text-4xl md:text-5xl lg:text-6xl font-light text-white mb-2">
+            {displayCounts.postGraduateStudents}
+          </div>
+          <div className="counter-label text-sm md:text-base text-white/70 uppercase tracking-wider">
+            Post Graduate Students
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function AboutPage() {
-  const [collaborators, setCollaborators] = useState<Speaker[]>([]);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [collaborators, setCollaborators] = useState<Speaker[]>([])
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
   // References and scroll effects
-  const heroRef = useRef(null);
-  const visionRef = useRef(null);
-  const statsRef = useRef(null);
-  const piRef = useRef(null);
-  const raRef = useRef(null);
-  const pgRef = useRef(null);
+  const heroRef = useRef(null)
+  const visionRef = useRef(null)
+  const statsRef = useRef(null)
+  const piRef = useRef(null)
+  const raRef = useRef(null)
+  const pgRef = useRef(null)
 
-  const isHeroInView = useInView(heroRef, { once: true, amount: 0.3 });
-  const isVisionInView = useInView(visionRef, { once: true, amount: 0.3 });
-  const isStatsInView = useInView(statsRef, { once: true, amount: 0.3 });
-  const isPIInView = useInView(piRef, { once: true, amount: 0.1 });
-  const isRAInView = useInView(raRef, { once: true, amount: 0.1 });
-  const isPGInView = useInView(pgRef, { once: true, amount: 0.1 });
+  const isHeroInView = useInView(heroRef, { once: true, amount: 0.3 })
+  const isVisionInView = useInView(visionRef, { once: true, amount: 0.3 })
+  const isStatsInView = useInView(statsRef, { once: true, amount: 0.3 })
+  const isPIInView = useInView(piRef, { once: true, amount: 0.1 })
+  const isRAInView = useInView(raRef, { once: true, amount: 0.1 })
+  const isPGInView = useInView(pgRef, { once: true, amount: 0.1 })
 
   // Parallax and scroll effects
-  const { scrollY } = useScroll();
-  const y1 = useTransform(scrollY, [0, 500], [0, 100]);
-  const opacity = useTransform(scrollY, [0, 200], [1, 0.5]);
-  const springY1 = useSpring(y1, { stiffness: 50, damping: 20 });
-  const springOpacity = useSpring(opacity, { stiffness: 50, damping: 20 });
+  const { scrollY } = useScroll()
+  const y1 = useTransform(scrollY, [0, 500], [0, 100])
+  const opacity = useTransform(scrollY, [0, 200], [1, 0.5])
+  const springY1 = useSpring(y1, { stiffness: 50, damping: 20 })
+  const springOpacity = useSpring(opacity, { stiffness: 50, damping: 20 })
 
   useEffect(() => {
     const fetch = async () => {
       try {
-        const data = await getCollaborators();
+        const data = await getCollaborators()
         if (data?.speakersCollection?.items) {
-          setCollaborators(data.speakersCollection.items);
-          console.log("Fetched collaborators:", data.speakersCollection.items);
+          setCollaborators(data.speakersCollection.items)
+          console.log("Fetched collaborators:", data.speakersCollection.items)
         } else {
-          console.error("Unexpected API response structure:", data);
+          console.error("Unexpected API response structure:", data)
         }
       } catch (error) {
-        console.error("Error fetching posts:", error);
+        console.error("Error fetching posts:", error)
       }
-    };
-    fetch();
+    }
+    fetch()
 
     const handleMouseMove = (e: MouseEvent) => {
-      const { clientX, clientY } = e;
-      const { innerWidth, innerHeight } = window;
-      const x = clientX / innerWidth - 0.5;
-      const y = clientY / innerHeight - 0.5;
-      setMousePosition({ x, y });
-    };
+      const { clientX, clientY } = e
+      const { innerWidth, innerHeight } = window
+      const x = clientX / innerWidth - 0.5
+      const y = clientY / innerHeight - 0.5
+      setMousePosition({ x, y })
+    }
 
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+    window.addEventListener("mousemove", handleMouseMove)
+    return () => window.removeEventListener("mousemove", handleMouseMove)
+  }, [])
 
   const filterByPosition = (pos: Position) =>
-    collaborators.filter((c) => Array.isArray(c.position) && c.position.includes(pos)).sort(sortByLastName); // Ordenar por apellido
+    collaborators.filter((c) => Array.isArray(c.position) && c.position.includes(pos)).sort(sortByLastName) // Ordenar por apellido
 
-  const principalInvestigators = filterByPosition(Position.PrincipalInvestigator);
-  const researchAssociates = filterByPosition(Position.ResearchAssociate);
-  const postGraduateStudents = filterByPosition(Position.PostGraduateStudent);
+  const principalInvestigators = filterByPosition(Position.PrincipalInvestigator)
+  const researchAssociates = filterByPosition(Position.ResearchAssociate)
+  const postGraduateStudents = filterByPosition(Position.PostGraduateStudent)
 
   const teamCounts = {
     principalInvestigators: principalInvestigators.length,
     researchAssociates: researchAssociates.length,
     postGraduateStudents: postGraduateStudents.length,
-  };
+  }
 
   // Modificación en la forma en que se manejan los supervisores de PhD
   const renderPhDSupervisor = (supervisor: string | string[]) => {
     if (Array.isArray(supervisor)) {
       return supervisor.map((name, index, arr) => {
-        const isLastName = index === arr.length - 1;
-        const supervisorUrl = getSupervisorUrl(name);
+        const isLastName = index === arr.length - 1
+        const supervisorUrl = getSupervisorUrl(name)
         return (
           <span key={name}>
             <Link href={supervisorUrl} className="hover:underline">
@@ -120,13 +207,13 @@ export default function AboutPage() {
             </Link>
             {!isLastName && " - "}
           </span>
-        );
-      });
+        )
+      })
     }
     // Si supervisor es una cadena, se maneja como antes
     return supervisor.split(" ").map((name, index, arr) => {
-      const isLastName = index === arr.length - 1;
-      const supervisorUrl = getSupervisorUrl(name);
+      const isLastName = index === arr.length - 1
+      const supervisorUrl = getSupervisorUrl(name)
       return (
         <span key={name}>
           <Link href={supervisorUrl} className="hover:underline">
@@ -134,9 +221,9 @@ export default function AboutPage() {
           </Link>
           {!isLastName && " - "}
         </span>
-      );
-    });
-  };
+      )
+    })
+  }
 
   return (
     <div className="min-h-screen bg-black">
@@ -184,8 +271,22 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Principal Investigators Section */}
-      <section ref={piRef} className="page-section bg-black text-white relative overflow-hidden">
+      {/* Modificar la sección Stats Counter para reducir la separación */}
+      <section ref={statsRef} className="page-section bg-black text-white relative overflow-hidden py-4 md:py-6">
+        <div className="container relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="max-w-5xl mx-auto"
+          >
+            <TeamStatsCounter counts={teamCounts} />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Principal Investigators Section - reducir el espacio superior */}
+      <section ref={piRef} className="page-section bg-black text-white relative overflow-hidden pt-6 md:pt-10">
         <div className="container relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -434,7 +535,9 @@ export default function AboutPage() {
                         )}
                         {pg.phdInstitution && <div className="text-white/70 text-xs">PhD, {pg.phdInstitution}</div>}
                         {pg.phdSupervisor && (
-                          <div className="text-white/70 text-xs">Supervisor: {renderPhDSupervisor(pg.phdSupervisor)}</div>
+                          <div className="text-white/70 text-xs">
+                            Supervisor: {renderPhDSupervisor(pg.phdSupervisor)}
+                          </div>
                         )}
                       </div>
 
@@ -455,5 +558,5 @@ export default function AboutPage() {
 
       <FooterSection />
     </div>
-  );
+  )
 }
