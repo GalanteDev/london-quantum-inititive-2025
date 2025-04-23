@@ -223,7 +223,7 @@ export default function EventsNewsPage() {
           {isLoaded && currentPosts.length === 0 && (
             <div className="bg-black/30 rounded-sm shadow-sm border border-white/10 p-10 text-center">
               <h3 className="text-xl font-medium text-white mb-2">No results found</h3>
-              <p className="text-white/70 mb-6">Try adjusting your search or filter to find what you're looking for.</p>
+              <p className="text-white/70 mb-6">Try adjusting your search or filter to find what you re looking for.</p>
               <button
                 onClick={() => {
                   setSearch("")
@@ -257,7 +257,7 @@ export default function EventsNewsPage() {
                   >
                     <Link
                       href={`/events-news/${post.slug}`}
-                      className="group h-full bg-black/30 rounded-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col border border-white/10"
+                      className="group h-full bg-black/30 rounded-sm shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col border border-white/10"
                     >
                       {/* Fixed image container with proper aspect ratio */}
                       <div className="relative w-full pt-[56.25%] overflow-hidden bg-mono-100">
