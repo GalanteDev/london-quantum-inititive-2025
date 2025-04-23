@@ -1,123 +1,133 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useParams, useRouter } from "next/navigation"
-import Image from "next/image"
-import Link from "next/link"
-import { Calendar, ArrowLeft, MapPin, Share2, ExternalLink, ArrowRight } from "lucide-react"
-import Navbar from "@/components/sections/navbar-section"
-import { FooterSection } from "@/components/sections/footer-section"
-import type { Post } from "@/types"
-import { getPostBySlug } from "@/lib/contentful/fetch-posts"
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  Calendar,
+  ArrowLeft,
+  MapPin,
+  Share2,
+  ExternalLink,
+  ArrowRight,
+  Globe,
+} from "lucide-react";
+import Navbar from "@/components/sections/navbar-section";
+import { FooterSection } from "@/components/sections/footer-section";
+import type { Post } from "@/types";
+import { getPostBySlug } from "@/lib/contentful/fetch-posts";
 
 export default function EventNewsDetailPage() {
-  const params = useParams()
-  const router = useRouter()
-  const [event, setEvent] = useState<Post | null>(null)
-  const [isLoaded, setIsLoaded] = useState(false)
-  const [speakers, setSpeakers] = useState<any[] | null>(null)
-  const [referrer, setReferrer] = useState<string | null>(null)
+  const params = useParams();
+  const router = useRouter();
+  const [event, setEvent] = useState<Post | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [speakers, setSpeakers] = useState<any[] | null>(null);
+  const [referrer, setReferrer] = useState<string | null>(null);
 
   // Function to format a date without year
   const formatDateWithoutYear = (dateString: string) => {
-    if (!dateString) return ""
+    if (!dateString) return "";
 
     try {
-      const date = new Date(dateString)
+      const date = new Date(dateString);
       return date.toLocaleDateString("en-GB", {
         day: "numeric",
         month: "long",
-      })
+      });
     } catch (e) {
-      console.error("Error formatting date without year:", e)
-      return ""
+      console.error("Error formatting date without year:", e);
+      return "";
     }
-  }
+  };
 
   // Function to format a date with year
   const formatDateWithYear = (dateString: string) => {
-    if (!dateString) return ""
+    if (!dateString) return "";
 
     try {
-      const date = new Date(dateString)
+      const date = new Date(dateString);
       return date.toLocaleDateString("en-GB", {
         day: "numeric",
         month: "long",
         year: "numeric",
-      })
+      });
     } catch (e) {
-      console.error("Error formatting date with year:", e)
-      return ""
+      console.error("Error formatting date with year:", e);
+      return "";
     }
-  }
+  };
 
   // Function to display date range
   const getDateDisplay = () => {
-    if (!event?.date) return ""
+    if (!event?.date) return "";
 
     // If no end date, just show start date with year
-    if (!event.dateTo) return formatDateWithYear(event.date)
+    if (!event.dateTo) return formatDateWithYear(event.date);
 
     // For date range, show first date without year and second date with year
-    const startDate = formatDateWithoutYear(event.date)
-    const endDate = formatDateWithYear(event.dateTo)
+    const startDate = formatDateWithoutYear(event.date);
+    const endDate = formatDateWithYear(event.dateTo);
 
-    return `${startDate} - ${endDate}`
-  }
+    return `${startDate} - ${endDate}`;
+  };
 
   // Function to handle back button click
-  const handleBackClick = (e : React.FormEvent) => {
-    e.preventDefault()
-    router.back()
-  }
+  const handleBackClick = (e: React.FormEvent) => {
+    e.preventDefault();
+    router.back();
+  };
 
   // Determine the URL for "View all news & events" based on the event type
   const getViewAllUrl = () => {
-    if (!event) return "/events-news"
+    if (!event) return "/events-news";
 
     // Check if the event has a tag "Events" or "Papers"
-    const tag = Array.isArray(event.tag) ? event.tag.find((t) => t === "Events" || t === "Papers") : event.tag
+    const tag = Array.isArray(event.tag)
+      ? event.tag.find((t) => t === "Events" || t === "Papers")
+      : event.tag;
 
     // If coming from research page and it's an event, apply filter
     if (referrer?.includes("/research") && tag === "Events") {
-      return "/events-news?filter=Events"
+      return "/events-news?filter=Events";
     }
 
     // If it's a paper, apply Papers filter
     if (tag === "Papers") {
-      return "/events-news?filter=Papers"
+      return "/events-news?filter=Papers";
     }
 
     // Default case
-    return "/events-news"
-  }
+    return "/events-news";
+  };
 
   useEffect(() => {
     // Store the referrer when component mounts
     if (document.referrer) {
-      setReferrer(document.referrer)
+      setReferrer(document.referrer);
     }
 
     const fetchEvent = async () => {
-      const slug = params?.slug as string
-      if (!slug) return
+      const slug = params?.slug as string;
+      if (!slug) return;
 
       try {
-        const item = await getPostBySlug(slug)
+        const item = await getPostBySlug(slug);
 
-        if (!item) return router.push("/events-news")
+        if (!item) return router.push("/events-news");
 
-        setEvent(item)
-        setIsLoaded(true)
-        setSpeakers(item.speakersCollection?.items || null)
+        setEvent(item);
+        setIsLoaded(true);
+        setSpeakers(item.speakersCollection?.items || null);
       } catch (err) {
-        console.error("Error fetching post by slug:", err)
-        router.push("/events-news")
+        console.error("Error fetching post by slug:", err);
+        router.push("/events-news");
       }
-    }
+    };
 
-    fetchEvent()
-  }, [params?.slug, router])
+    fetchEvent();
+  }, [params?.slug, router]);
 
   if (!isLoaded || !event) {
     return (
@@ -127,7 +137,7 @@ export default function EventNewsDetailPage() {
           <span className="text-white/80">Loading content...</span>
         </div>
       </div>
-    )
+    );
   }
 
   // Determine the button text based on the event type
@@ -135,8 +145,8 @@ export default function EventNewsDetailPage() {
     Array.isArray(event.tag) && event.tag.includes("Events")
       ? "View all events"
       : Array.isArray(event.tag) && event.tag.includes("Papers")
-        ? "View all papers"
-        : "View all news & events"
+      ? "View all papers"
+      : "View all news & events";
 
   return (
     <div className="bg-black text-white">
@@ -175,7 +185,7 @@ export default function EventNewsDetailPage() {
             className="inline-flex items-center text-sm text-white/60 hover:text-white transition-colors mb-4 group bg-transparent border-0 cursor-pointer"
           >
             <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
-            <span className="hidden sm:inline">Back to</span> previous page
+            <span className="hidden sm:inline">Back</span>
           </button>
 
           {/* Tags */}
@@ -199,7 +209,9 @@ export default function EventNewsDetailPage() {
           )}
 
           {/* Title */}
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-light tracking-tight text-white mb-3">{event.title}</h1>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-light tracking-tight text-white mb-3">
+            {event.title}
+          </h1>
 
           {/* Meta info in a row */}
           <div className="flex flex-wrap items-center text-xs sm:text-sm text-white/70 gap-3 mb-5">
@@ -216,17 +228,33 @@ export default function EventNewsDetailPage() {
                 <span className="line-clamp-1">{event.address}</span>
               </div>
             )}
+
+            {event.pageUrl && (
+              <div className="flex items-center bg-black/40 px-2.5 py-1 rounded-sm border border-white/10 backdrop-blur-sm">
+                <Globe className="h-3.5 w-3.5 mr-1.5 text-white/70" />
+                <Link
+                  href={event.pageUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-white/80 hover:underline"
+                >
+                  {event.pageUrl}
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </section>
 
       {/* Main Content Section */}
       <section className="py-6 md:py-8">
-        <div className="w-[90%] max-w-4xl mx-auto relative z-10">
+        <div className="w-[90%] max-w-4xl mx-auto text-justify relative z-10">
           {/* Description */}
           {event.description && (
             <div className="mb-6 bg-black/30 p-4 sm:p-5 rounded-sm border border-white/10 backdrop-blur-sm">
-              <p className="text-base sm:text-lg text-white/90 leading-relaxed">{event.description}</p>
+              <p className="text-base sm:text-lg text-white/90 leading-relaxed">
+                {event.description}
+              </p>
             </div>
           )}
 
@@ -260,7 +288,9 @@ export default function EventNewsDetailPage() {
             <div className="mb-8">
               <h2 className="text-xl font-light text-white mb-3 flex items-center">
                 <span className="w-6 h-px bg-white/30 mr-2"></span>
-                {Array.isArray(event.tag) && event.tag.includes("Events") ? "LQ Members Involved" : "Researchers"}
+                {Array.isArray(event.tag) && event.tag.includes("Events")
+                  ? "LQ Members Involved"
+                  : "Researchers"}
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -283,7 +313,11 @@ export default function EventNewsDetailPage() {
                     <div className="flex-1 min-w-0">
                       <Link
                         className="font-medium text-white text-base hover:text-white/80 transition-colors inline-block"
-                        href={`/about/${speaker.name?.toLowerCase().replace(/\s+/g, "-")}` || ""}
+                        href={
+                          `/about/${speaker.name
+                            ?.toLowerCase()
+                            .replace(/\s+/g, "-")}` || ""
+                        }
                       >
                         {speaker.name}
                       </Link>
@@ -292,12 +326,16 @@ export default function EventNewsDetailPage() {
 
                       {/* Institución */}
                       {speaker.institution && (
-                        <p className="text-white/70 text-xs mb-1 truncate">{speaker.institution}</p>
+                        <p className="text-white/70 text-xs mb-1 truncate">
+                          {speaker.institution}
+                        </p>
                       )}
 
                       {/* Biografía */}
                       {speaker.biography && (
-                        <p className="text-white/60 text-xs mb-2 line-clamp-2">{speaker.biography}</p>
+                        <p className="text-white/60 text-xs mb-2 line-clamp-2">
+                          {speaker.biography}
+                        </p>
                       )}
 
                       <div className="flex flex-wrap gap-2 mt-2">
@@ -355,5 +393,5 @@ export default function EventNewsDetailPage() {
 
       <FooterSection />
     </div>
-  )
+  );
 }

@@ -26,7 +26,7 @@ export function FeaturesSection() {
   return (
     <section
       ref={ref}
-      className="py-12 sm:py-16 md:py-24 lg:py-32 bg-gradient-to-b from-[#222222] to-[#2a2a2a] text-white relative overflow-hidden"
+      className="py-12 sm:py-16 md:py-24 lg:py-32 bg-gradient-to-b from-[#111111] to-[#1a1a1a] text-white relative overflow-hidden "
     >
       {/* Subtle background pattern with parallax effect */}
       <ParallaxEffect speed={0.05} className="absolute inset-0 pointer-events-none">

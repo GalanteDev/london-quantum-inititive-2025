@@ -1,125 +1,141 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useEffect, useState, useRef } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { useSearchParams } from "next/navigation"
-import { Calendar, ArrowRight, Search, X, ChevronLeft, ChevronRight } from "lucide-react"
-import { formatDate } from "@/utils/format-date"
-import Navbar from "@/components/sections/navbar-section"
-import { FooterSection } from "@/components/sections/footer-section"
-import { getAllPosts } from "@/lib/contentful/fetch-posts"
-import { FadeInOnScroll } from "@/components/scroll-effects/FadeInOnScroll"
-import { getCategoryColor } from "@/lib/utils/tags"
-import type { Post } from "@/types"
+import { useEffect, useState, useRef } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import {
+  Calendar,
+  ArrowRight,
+  Search,
+  X,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import { formatDate } from "@/utils/format-date";
+import Navbar from "@/components/sections/navbar-section";
+import { FooterSection } from "@/components/sections/footer-section";
+import { getAllPosts } from "@/lib/contentful/fetch-posts";
+import { FadeInOnScroll } from "@/components/scroll-effects/FadeInOnScroll";
+import { getCategoryColor } from "@/lib/utils/tags";
+import type { Post } from "@/types";
 
 export default function EventsNewsPage() {
-  const searchParams = useSearchParams()
-  const [posts, setPosts] = useState<Post[]>([])
-  const [search, setSearch] = useState("")
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
-  const [currentPage, setCurrentPage] = useState(1)
-  const [isLoaded, setIsLoaded] = useState(false)
-  const perPage = 12
+  const searchParams = useSearchParams();
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [search, setSearch] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const perPage = 12;
 
-  const searchRef = useRef<HTMLInputElement>(null)
+  const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetch = async () => {
       try {
-        const data = await getAllPosts()
-        setPosts(data)
-        setIsLoaded(true)
+        const data = await getAllPosts();
+        setPosts(data);
+        setIsLoaded(true);
       } catch (error) {
-        console.error("Error fetching posts:", error)
-        setIsLoaded(true)
+        console.error("Error fetching posts:", error);
+        setIsLoaded(true);
       }
-    }
-    fetch()
-  }, [])
+    };
+    fetch();
+  }, []);
 
   // Apply filter from URL parameter if present
   useEffect(() => {
-    const filterParam = searchParams.get("filter")
+    const filterParam = searchParams.get("filter");
     if (filterParam) {
       // Asegurarse de que el filtro se aplique después de que los posts estén cargados
-      setSelectedTags([filterParam])
-      setCurrentPage(1)
+      setSelectedTags([filterParam]);
+      setCurrentPage(1);
     }
-  }, [searchParams])
+  }, [searchParams]);
 
   const filteredPosts = posts.filter((post) => {
     // Match search text
     const matchSearch =
       post.title.toLowerCase().includes(search.toLowerCase()) ||
-      post.description?.toLowerCase().includes(search.toLowerCase())
+      post.description?.toLowerCase().includes(search.toLowerCase());
 
     // Match tags (if no tags selected, show all)
     const matchTag =
       selectedTags.length === 0 ||
       (Array.isArray(post.tag)
         ? post.tag.some((tag) => selectedTags.includes(tag))
-        : post.tag && selectedTags.includes(post.tag))
+        : post.tag && selectedTags.includes(post.tag));
 
-    return matchSearch && matchTag
-  })
+    return matchSearch && matchTag;
+  });
 
-  const totalPages = Math.ceil(filteredPosts.length / perPage)
-  const currentPosts = filteredPosts.slice((currentPage - 1) * perPage, currentPage * perPage)
+  const totalPages = Math.ceil(filteredPosts.length / perPage);
+  const currentPosts = filteredPosts.slice(
+    (currentPage - 1) * perPage,
+    currentPage * perPage
+  );
 
   // Extract all unique tags from posts
-  const allTags = Array.from(new Set(posts.flatMap((p) => (Array.isArray(p.tag) ? p.tag : p.tag ? [p.tag] : []))))
+  const allTags = Array.from(
+    new Set(
+      posts.flatMap((p) =>
+        Array.isArray(p.tag) ? p.tag : p.tag ? [p.tag] : []
+      )
+    )
+  );
 
   const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (searchRef.current) {
-      setSearch(searchRef.current.value)
-      setCurrentPage(1)
+      setSearch(searchRef.current.value);
+      setCurrentPage(1);
     }
-  }
+  };
 
   const clearSearch = () => {
-    setSearch("")
+    setSearch("");
     if (searchRef.current) {
-      searchRef.current.value = ""
-      searchRef.current.focus()
+      searchRef.current.value = "";
+      searchRef.current.focus();
     }
 
-    setCurrentPage(1)
-  }
+    setCurrentPage(1);
+  };
 
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) => {
       // If tag is already selected, remove it
       if (prev.includes(tag)) {
-        return prev.filter((t) => t !== tag)
+        return prev.filter((t) => t !== tag);
       }
       // Otherwise add it
-      return [...prev, tag]
-    })
-    setCurrentPage(1)
-  }
+      return [...prev, tag];
+    });
+    setCurrentPage(1);
+  };
 
   const handleAllTags = () => {
-    setSelectedTags([])
-    setCurrentPage(1)
-  }
+    setSelectedTags([]);
+    setCurrentPage(1);
+  };
 
   const goToNextPage = () => {
     if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1)
-      window.scrollTo({ top: 0, behavior: "smooth" })
+      setCurrentPage(currentPage + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }
+  };
 
   const goToPrevPage = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1)
-      window.scrollTo({ top: 0, behavior: "smooth" })
+      setCurrentPage(currentPage - 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -215,22 +231,29 @@ export default function EventsNewsPage() {
           {/* Loading State */}
           {!isLoaded && (
             <div className="flex justify-center items-center py-20">
-              <div className="animate-pulse text-mono-600">Loading posts...</div>
+              <div className="animate-pulse text-mono-600">
+                Loading posts...
+              </div>
             </div>
           )}
 
           {/* No Results */}
           {isLoaded && currentPosts.length === 0 && (
             <div className="bg-black/30 rounded-sm shadow-sm border border-white/10 p-10 text-center">
-              <h3 className="text-xl font-medium text-white mb-2">No results found</h3>
-              <p className="text-white/70 mb-6">Try adjusting your search or filter to find what you're looking for.</p>
+              <h3 className="text-xl font-medium text-white mb-2">
+                No results found
+              </h3>
+              <p className="text-white/70 mb-6">
+                Try adjusting your search or filter to find what you're looking
+                for.
+              </p>
               <button
                 onClick={() => {
-                  setSearch("")
-                  setSelectedTags([])
-                  setCurrentPage(1)
+                  setSearch("");
+                  setSelectedTags([]);
+                  setCurrentPage(1);
                   if (searchRef.current) {
-                    searchRef.current.value = ""
+                    searchRef.current.value = "";
                   }
                 }}
                 className="px-4 py-2 bg-white/10 text-white rounded-sm hover:bg-white/20 transition-colors border border-white/10"
@@ -244,7 +267,7 @@ export default function EventsNewsPage() {
           {isLoaded && currentPosts.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
               {currentPosts.map((post, index) => {
-                const tag = Array.isArray(post.tag) ? post.tag[0] : post.tag
+                const tag = Array.isArray(post.tag) ? post.tag[0] : post.tag;
 
                 return (
                   <FadeInOnScroll
@@ -264,11 +287,7 @@ export default function EventsNewsPage() {
                         {/* Tag */}
                         {tag && (
                           <div className="absolute top-3 left-3 z-10">
-                            <span
-                              className={`inline-flex items-center px-3 py-1 rounded-sm text-xs font-medium shadow-sm ${getCategoryColor(
-                                tag,
-                              )}`}
-                            >
+                            <span className="inline-flex items-center px-3 py-1 rounded-sm text-xs font-medium bg-black/60 text-white border border-transparent backdrop-blur-sm">
                               {tag}
                             </span>
                           </div>
@@ -302,7 +321,9 @@ export default function EventsNewsPage() {
                           {post.title}
                         </h3>
 
-                        <p className="text-sm text-white/70 line-clamp-3 mb-4 flex-grow">{post.description}</p>
+                        <p className="text-sm text-white/70 line-clamp-3 mb-4 flex-grow">
+                          {post.description}
+                        </p>
 
                         <div className="mt-auto inline-flex items-center text-sm font-medium text-white group-hover:text-white/80 transition-colors">
                           Read more
@@ -311,7 +332,7 @@ export default function EventsNewsPage() {
                       </div>
                     </Link>
                   </FadeInOnScroll>
-                )
+                );
               })}
             </div>
           )}
@@ -333,7 +354,9 @@ export default function EventsNewsPage() {
                     onClick={goToPrevPage}
                     disabled={currentPage === 1}
                     className={`p-2 rounded-sm flex items-center justify-center ${
-                      currentPage === 1 ? "text-white/30 cursor-not-allowed" : "text-white hover:bg-black/50"
+                      currentPage === 1
+                        ? "text-white/30 cursor-not-allowed"
+                        : "text-white hover:bg-black/50"
                     }`}
                     aria-label="Previous page"
                   >
@@ -345,23 +368,27 @@ export default function EventsNewsPage() {
                     {Array.from({ length: totalPages }).map((_, i) => {
                       // On larger screens, show all pages if less than 7
                       // Otherwise show first, last, current, and pages around current
-                      const pageNum = i + 1
+                      const pageNum = i + 1;
                       const showPage =
                         totalPages <= 7 ||
                         pageNum === 1 ||
                         pageNum === totalPages ||
-                        Math.abs(pageNum - currentPage) <= 1
+                        Math.abs(pageNum - currentPage) <= 1;
 
                       // Show ellipsis for gaps
-                      const showEllipsisBefore = i === 1 && currentPage > 3
-                      const showEllipsisAfter = i === totalPages - 2 && currentPage < totalPages - 2
+                      const showEllipsisBefore = i === 1 && currentPage > 3;
+                      const showEllipsisAfter =
+                        i === totalPages - 2 && currentPage < totalPages - 2;
 
                       if (showEllipsisBefore || showEllipsisAfter) {
                         return (
-                          <span key={`ellipsis-${i}`} className="w-9 flex items-center justify-center text-white/50">
+                          <span
+                            key={`ellipsis-${i}`}
+                            className="w-9 flex items-center justify-center text-white/50"
+                          >
                             ...
                           </span>
-                        )
+                        );
                       }
 
                       if (showPage) {
@@ -369,19 +396,21 @@ export default function EventsNewsPage() {
                           <button
                             key={i}
                             onClick={() => {
-                              setCurrentPage(pageNum)
-                              window.scrollTo({ top: 0, behavior: "smooth" })
+                              setCurrentPage(pageNum);
+                              window.scrollTo({ top: 0, behavior: "smooth" });
                             }}
                             className={`min-w-[36px] h-9 px-3 py-1 text-sm rounded-sm ${
-                              currentPage === pageNum ? "bg-white text-black" : "text-white hover:bg-black/50"
+                              currentPage === pageNum
+                                ? "bg-white text-black"
+                                : "text-white hover:bg-black/50"
                             }`}
                           >
                             {pageNum}
                           </button>
-                        )
+                        );
                       }
 
-                      return null
+                      return null;
                     })}
                   </div>
 
@@ -395,7 +424,9 @@ export default function EventsNewsPage() {
                     onClick={goToNextPage}
                     disabled={currentPage === totalPages}
                     className={`p-2 rounded-sm flex items-center justify-center ${
-                      currentPage === totalPages ? "text-white/30 cursor-not-allowed" : "text-white hover:bg-black/50"
+                      currentPage === totalPages
+                        ? "text-white/30 cursor-not-allowed"
+                        : "text-white hover:bg-black/50"
                     }`}
                     aria-label="Next page"
                   >
@@ -410,5 +441,5 @@ export default function EventsNewsPage() {
 
       <FooterSection />
     </div>
-  )
+  );
 }

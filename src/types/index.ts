@@ -7,6 +7,7 @@ export interface Post {
   description?: string
   mainText?: string
   tag?: string[]
+  pageUrl?: string
   address?: string
   showInNews?: boolean
   photo?: {
