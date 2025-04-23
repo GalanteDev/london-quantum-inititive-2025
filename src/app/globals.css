@@ -248,11 +248,11 @@ html {
 
 /* Mejorar la experiencia táctil en móviles */
 @media (max-width: 640px) {
-  button,
-  a {
-    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  button.carousel-bullet,
+  a.carousel-bullet {
+    min-width: unset !important;
+    min-height: unset !important;
   }
-
   input,
   select,
   textarea {

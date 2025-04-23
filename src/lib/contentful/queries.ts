@@ -171,3 +171,39 @@ export const GET_RESEARCHER_BY_SLUG = `
     }
   }
 `;
+
+export const GET_EVENTS_POSTS = gql`
+  query GetEventsPosts {
+    postsCollection(where: { tag_contains_some: ["Events"] }, order: date_DESC, limit: 100) {
+      items {
+        title
+        slug
+        date
+        dateTo
+        tag
+        description
+        photo {
+          url
+        }
+      }
+    }
+  }
+`;
+
+export const GET_PAPERS_POSTS = gql`
+  query GetPapersPosts {
+    postsCollection(where: { tag_contains_some: ["Research"] }, order: date_DESC, limit: 100) {
+      items {
+        title
+        slug
+        date
+        dateTo
+        tag
+        description
+        photo {
+          url
+        }
+      }
+    }
+  }
+`;

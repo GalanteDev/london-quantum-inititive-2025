@@ -26,7 +26,7 @@ export function FeaturesSection() {
   return (
     <section
       ref={ref}
-      className="py-16 md:py-24 lg:py-32 bg-gradient-to-b from-[#222222] to-[#2a2a2a] text-white relative overflow-hidden"
+      className="py-12 sm:py-16 md:py-24 lg:py-32 bg-gradient-to-b from-[#222222] to-[#2a2a2a] text-white relative overflow-hidden"
     >
       {/* Subtle background pattern with parallax effect */}
       <ParallaxEffect speed={0.05} className="absolute inset-0 pointer-events-none">
@@ -43,14 +43,14 @@ export function FeaturesSection() {
       </ParallaxEffect>
 
       {/* Using the global container class */}
-      <div className="container relative z-10">
+      <div className="container relative z-10 px-4 sm:px-6 md:px-8">
         <motion.div
           ref={titleRef}
           style={{
             opacity: springTitleOpacity,
             y: springTitleY,
           }}
-          className="max-w-3xl mx-auto text-center mb-12 md:mb-16 lg:mb-20"
+          className="max-w-3xl mx-auto text-center mb-10 sm:mb-12 md:mb-16 lg:mb-20"
         >
           <motion.h2
             initial={{ opacity: 0, y: 15, clipPath: "inset(0 0 100% 0)" }}
@@ -91,7 +91,7 @@ export function FeaturesSection() {
           </motion.p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10 md:gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 md:gap-12">
           {features.map((feature, index) => (
             <FadeInOnScroll
               key={index}
@@ -102,7 +102,7 @@ export function FeaturesSection() {
             >
               <div className="group h-full flex flex-col items-center text-center">
                 {/* Circular grayscale image */}
-                <div className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-full overflow-hidden mb-6 shadow-lg border border-white/10">
+                <div className="relative w-36 h-36 xs:w-40 xs:h-40 sm:w-44 sm:h-44 md:w-52 md:h-52 lg:w-56 lg:h-56 rounded-full overflow-hidden mb-6 shadow-lg border border-white/10">
                   <div
                     className="absolute inset-0 bg-cover bg-center grayscale transition-transform duration-700 group-hover:scale-105"
                     style={{ backgroundImage: `url(${feature.image})` }}
@@ -113,22 +113,24 @@ export function FeaturesSection() {
                 </div>
 
                 {/* Content */}
-                <div className="flex flex-col items-center">
-                  <h3 className="text-xl sm:text-2xl font-light text-white mb-3 group-hover:text-white/90 transition-colors">
+                <div className="flex flex-col items-center flex-grow">
+                  <h3 className="text-lg xs:text-xl sm:text-xl md:text-2xl font-light text-white mb-3 group-hover:text-white/90 transition-colors">
                     {feature.title}
                   </h3>
 
                   <div className="w-8 h-1 bg-white/30 rounded-full mb-4 transition-all duration-300 group-hover:w-12 group-hover:bg-white/40"></div>
 
-                  <p className="text-white/70 text-sm sm:text-base mb-5 max-w-xs">{feature.description}</p>
+                  <p className="text-white/70 text-sm sm:text-sm md:text-base mb-5 max-w-xs">{feature.description}</p>
 
-                  <Link
-                    href={feature.link}
-                    className="inline-flex items-center px-4 py-2 bg-white/10 text-white text-sm font-medium rounded-sm hover:bg-white/20 transition-colors shadow-sm hover:shadow-md border border-white/10 hover:border-white/20"
-                  >
-                    <span>Learn more</span>
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                  </Link>
+                  <div className="mt-auto pt-2">
+                    <Link
+                      href={feature.link}
+                      className="inline-flex items-center px-4 py-2 bg-white/10 text-white text-sm font-medium rounded-sm hover:bg-white/20 transition-colors shadow-sm hover:shadow-md border border-white/10 hover:border-white/20"
+                    >
+                      <span>Learn more</span>
+                      <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             </FadeInOnScroll>

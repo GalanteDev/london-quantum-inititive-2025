@@ -225,24 +225,13 @@ export default function ResearcherDetailPage() {
                 {researcher.biography && (
                   <div className="mb-6 border-t border-white/10 pt-6 mt-2">
                     <h3 className="text-lg font-light text-white mb-3">Biography</h3>
-                    <p className="text-white/70 leading-relaxed">{researcher.biography}</p>
+                    <p className="text-white/70 text-justify leading-relaxed">{researcher.biography}</p>
                   </div>
                 )}
 
                 <div className="mt-auto pt-4 border-t border-white/10">
                   <h3 className="text-sm font-medium text-white/70 mb-3">Connect</h3>
                   <div className="flex flex-wrap gap-3">
-                    {researcher.universityLogo && (
-                      <a
-                        href={researcher.universityLogo.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center px-3 py-1.5 bg-black/40 text-white text-xs rounded-sm hover:bg-black/60 transition-colors border border-white/5"
-                      >
-                        University Profile <ExternalLink className="ml-1.5 h-3 w-3" />
-                      </a>
-                    )}
-
                     {researcher.googleScholarUrl && (
                       <a
                         href={researcher.googleScholarUrl}
@@ -250,7 +239,7 @@ export default function ResearcherDetailPage() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center px-3 py-1.5 bg-black/40 text-white text-xs rounded-sm hover:bg-black/60 transition-colors border border-white/5"
                       >
-                        Google Scholar <ExternalLink className="ml-1.5 h-3 w-3" />
+                        INSPIRE profile <ExternalLink className="ml-1.5 h-3 w-3" />
                       </a>
                     )}
 

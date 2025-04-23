@@ -181,7 +181,7 @@ export function HeroSection() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1 }}
-              className="mb-6 md:mb-10 w-full"
+              className="mb-6 md:mb-10 w-full pt-3"
               style={{ y: springY1 }}
             >
               {/* Logo */}
@@ -189,7 +189,7 @@ export function HeroSection() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
-                className="mb-4 md:mb-6 flex justify-center lg:justify-start"
+                className="mb-4 pt-1 sm:pt-0 md:mb-6 flex justify-center lg:justify-start"
               >
                 <QuantumLogo
                   size="medium"
@@ -334,7 +334,7 @@ export function HeroSection() {
               </div>
 
               {/* Slide indicators - with much smaller size for mobile */}
-              <div className="flex justify-center mt-3 mb-1">
+              <div className="flex justify-center mt-3 mb-2">
                 <div className="flex space-x-2 md:space-x-3">
                   {founders.map((_, index) => (
                     <button

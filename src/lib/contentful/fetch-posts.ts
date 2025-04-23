@@ -3,7 +3,9 @@ import { client } from "./client";
 import {
   GET_ALL_POSTS,
   GET_COLLABORATORS,
+  GET_EVENTS_POSTS,
   GET_HIGHLIGHTED_POSTS,
+  GET_PAPERS_POSTS,
   GET_POST_BY_SLUG,
   GET_RESEARCHER_BY_SLUG,
 } from "./queries";
@@ -76,5 +78,30 @@ export async function getResearcherBySlug(slug: string): Promise<Speaker | null>
     return null;
   }
 }
+
+export async function getEventsPosts(): Promise<Post[]> {
+  try {
+    const res = await client.request<{ postsCollection: { items: Post[] } }>(
+      GET_EVENTS_POSTS
+    );
+    return res.postsCollection.items;
+  } catch (error) {
+    console.error("❌ Error fetching events posts:", error);
+    return [];
+  }
+}
+
+export async function getPapersPosts(): Promise<Post[]> {
+  try {
+    const res = await client.request<{ postsCollection: { items: Post[] } }>(
+      GET_PAPERS_POSTS
+    );
+    return res.postsCollection.items;
+  } catch (error) {
+    console.error("❌ Error fetching papers posts:", error);
+    return [];
+  }
+}
+
 
 
