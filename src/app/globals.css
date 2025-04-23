@@ -66,7 +66,7 @@
   h3,
   h4,
   h5,
-  h6 {
+  h5 {
     font-family: "Noto Sans", sans-serif;
     @apply font-light tracking-tight;
   }
@@ -225,7 +225,7 @@ html {
   }
 
   section {
-    @apply py-4;
+    @apply py-10;
   }
 
   h1 {
@@ -270,11 +270,11 @@ html {
 /* Ajustes específicos para notebooks y tablets */
 @media (min-width: 641px) and (max-width: 1366px) {
   .container {
-    width: 100%;
+    width: 90%;
   }
 
   section {
-    @apply py-12;
+    @apply py-16;
   }
 }
 
@@ -310,4 +310,39 @@ html {
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
+}
+
+/* Añadir estas reglas al final del archivo para prevenir el efecto de rebote */
+
+/* Prevenir el efecto de rebote en navegadores modernos */
+html {
+  overscroll-behavior: none;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+body {
+  overscroll-behavior: none;
+  overflow-x: hidden;
+  min-height: 100%;
+  position: relative;
+}
+
+/* Solución específica para Safari */
+@supports (-webkit-overflow-scrolling: touch) {
+  html,
+  body {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+  }
+}
+
+/* Solución para dispositivos táctiles */
+@media (pointer: coarse) {
+  html,
+  body {
+    overscroll-behavior-y: none;
+  }
 }

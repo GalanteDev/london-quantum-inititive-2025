@@ -85,7 +85,7 @@ export default function AboutPage() {
     };
     fetch();
 
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       const { clientX, clientY } = e;
       const { innerWidth, innerHeight } = window;
       const x = clientX / innerWidth - 0.5;

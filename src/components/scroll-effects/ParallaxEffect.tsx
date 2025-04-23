@@ -8,6 +8,16 @@ interface ParallaxEffectProps {
   className?: string
 }
 
+  interface FadeInOnScrollProps {
+    children: React.ReactNode;
+    className?: string;
+    threshold?: number;
+    direction?: "up" | "down" | "left" | "right";
+    delay?: number;
+    duration?: number;
+    once?: boolean;
+  }
+
 export function FadeInOnScroll({
   children,
   className = "",
@@ -16,7 +26,7 @@ export function FadeInOnScroll({
   delay = 0,
   duration = 0.5,
   once = true,
-}) {
+}: FadeInOnScrollProps) {
   const [isVisible, setIsVisible] = useState(false)
   const ref = useRef(null)
 

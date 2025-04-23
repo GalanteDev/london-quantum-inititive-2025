@@ -89,7 +89,7 @@ export function HeroSection() {
   useEffect(() => {
     setIsLoaded(true)
 
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       const { clientX, clientY } = e
       const { innerWidth, innerHeight } = window
       const x = clientX / innerWidth - 0.5

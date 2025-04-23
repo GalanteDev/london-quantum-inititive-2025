@@ -1,5 +1,10 @@
+interface IconBaseProps {
+  className?: string;
+  children: React.ReactNode;
+}
+
 // Common styles for all icons
-const IconBase = ({ className = "", children }) => (
+const IconBase = ({ className = "", children }: IconBaseProps) => (
     <div className={`inline-flex items-center justify-center ${className}`}>{children}</div>
   )
   
