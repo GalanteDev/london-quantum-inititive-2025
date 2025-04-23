@@ -147,7 +147,7 @@ export function HeroSection() {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/80 to-black/80"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-black/80"></div>
       </div>
 
       {/* Floating particles */}

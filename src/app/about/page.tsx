@@ -262,7 +262,7 @@ export default function AboutPage() {
             >
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-tight mb-6">About Us</h1>
               <div className="section-divider"></div>
-              <p className="text-lg sm:text-xl text-white/80 leading-relaxed">
+              <p className="text-lg sm:text-xl text-white/80 text-justify leading-relaxed">
                 The London Quantum Universe Initiative brings together leading theoretical physicists to explore the
                 fundamental nature of quantum reality and its implications for our understanding of the cosmos.
               </p>
