@@ -8,7 +8,7 @@ import { FooterSection } from "@/components/sections/footer-section"
 import { getAllPosts } from "@/lib/contentful/fetch-posts"
 import { FadeInOnScroll } from "@/components/scroll-effects/FadeInOnScroll"
 import type { Post } from "@/types"
-import { Card } from "@/components/ui/Card"
+import { Card } from "@/components/ui/CardLQUI"
 import { getCategoryColor } from "@/lib/utils/tags"
 import { NavigateButton } from "@/components/ui/NavigateButton"
 

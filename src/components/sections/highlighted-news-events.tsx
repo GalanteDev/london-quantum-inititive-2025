@@ -6,7 +6,7 @@ import { motion, useInView, useScroll, useTransform, useSpring } from "framer-mo
 import { FadeInOnScroll } from "@/components/scroll-effects/FadeInOnScroll"
 import type { Post } from "@/types"
 import { ParallaxEffect } from "@/components/scroll-effects/ParallaxEffect"
-import { Card } from "@/components/ui/Card"
+import { Card } from "@/components/ui/CardLQUI"
 import { ArrowRight } from "lucide-react"
 
 const formatDateWithoutYear = (dateString: string) => {

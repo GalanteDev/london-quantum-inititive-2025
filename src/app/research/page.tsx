@@ -12,7 +12,7 @@ import { ParallaxEffect } from "@/components/scroll-effects/ParallaxEffect"
 import { formatDate } from "@/utils/format-date"
 import { getEventsPosts, getPapersPosts } from "@/lib/contentful/fetch-posts"
 import type { Post } from "@/types"
-import { Card } from "@/components/ui/Card"
+import { Card } from "@/components/ui/CardLQUI"
 
 const researchInterests = [
   { id: "quantum-gravity", title: "Quantum Gravity", description: "Exploring the fundamental nature of spacetime at the quantum level, including black hole thermodynamics and holographic principles.", imageUrl: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2070&auto=format&fit=crop" },
