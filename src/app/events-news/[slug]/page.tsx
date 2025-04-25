@@ -167,11 +167,11 @@ export default function EventNewsDetailPage() {
 
       {/* Main Content */}
       <section className="py-8">
-        <div className="w-[90%] max-w-4xl mx-auto relative z-10">
+        <div className="w-[90%] text-justify max-w-4xl mx-auto relative z-10">
 
           {/* Description */}
           {event.description && (
-            <div className="mb-6 bg-black/30 p-4 sm:p-5 rounded-sm border border-white/10">
+            <div className="mb-6 bg-black/30 justify-normal p-4 sm:p-5 rounded-sm border border-white/10">
               <p className="text-base sm:text-lg text-white/90">{event.description}</p>
             </div>
           )}
@@ -186,7 +186,7 @@ export default function EventNewsDetailPage() {
 
           {/* Main Text (if available) */}
           {event.mainText && (
-            <div className="prose prose-invert max-w-none bg-black/20 p-5 rounded-sm border border-white/5 mb-8">
+            <div className="prose prose-invert justify-normal max-w-none bg-black/20 p-5 rounded-sm border border-white/5 mb-8">
               <div dangerouslySetInnerHTML={{ __html: event.mainText }} />
             </div>
           )}

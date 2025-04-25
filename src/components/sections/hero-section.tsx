@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { motion, useScroll, useTransform, useSpring, useInView, AnimatePresence } from "framer-motion"
+import { motion, useScroll, useTransform, useSpring, useInView, AnimatePresence, type PanInfo } from "framer-motion"
 import Link from "next/link"
 import { ArrowRight, ChevronDown } from "lucide-react"
 import Image from "next/image"
@@ -23,17 +23,17 @@ const founders = [
   {
     name: "Dr. Tarek Anous",
     title: "Theoretical Physicist",
-    image: "/images/heroback.png", // Actualizado
+    image: "/images/chalkboard.jpeg",
   },
   {
     name: "Dr. Dionysios Anninos",
     title: "Theoretical Physicist",
-    image: "/images/heroback.png", // Actualizado
+    image: "/images/chalkboard-equations.png",
   },
   {
     name: "Dr. Damian Galante",
     title: "Theoretical Physicist",
-    image: "/images/heroback.png", // Actualizado
+    image: "/images/pizarron3.png",
   },
 ]
 
@@ -76,6 +76,15 @@ export function HeroSection() {
 
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev === 0 ? founders.length - 1 : prev - 1))
+  }
+
+  // Handle swipe gestures
+  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    if (info.offset.x > 50) {
+      prevSlide()
+    } else if (info.offset.x < -50) {
+      nextSlide()
+    }
   }
 
   // Auto-advance carousel every 6 seconds
@@ -311,7 +320,14 @@ export function HeroSection() {
               {/* Carousel container - adjusted padding and margins for alignment */}
               <div className="relative rounded-lg overflow-hidden shadow-xl border border-white/20 backdrop-blur-sm group transition-all duration-300 hover:shadow-2xl hover:border-white/30 w-full">
                 {/* Carousel slides */}
-                <div className="relative aspect-[4/3] overflow-hidden">
+                <motion.div
+                  className="relative aspect-[4/3] overflow-hidden"
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.2}
+                  onDragEnd={handleDragEnd}
+                  dragTransition={{ bounceStiffness: 600, bounceDamping: 20 }}
+                >
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={currentSlide}
@@ -344,7 +360,7 @@ export function HeroSection() {
                       </div>
                     </motion.div>
                   </AnimatePresence>
-                </div>
+                </motion.div>
               </div>
 
               {/* Slide indicators - with much smaller size for mobile */}
