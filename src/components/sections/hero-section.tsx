@@ -118,7 +118,7 @@ export function HeroSection() {
       <div className="absolute inset-0 z-0">
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.1 }}
+          animate={{ opacity: 0.08 }}
           transition={{ duration: 1.5, ease: "easeOut" }}
           className="absolute inset-0"
           style={{
@@ -130,24 +130,26 @@ export function HeroSection() {
 
         {/* Gradient that responds to mouse movement */}
         <motion.div
-          className="absolute inset-0 bg-gradient-radial from-gray-900/50 via-transparent to-transparent"
+          className="absolute inset-0 bg-gradient-radial from-gray-900/40 via-transparent to-transparent"
           style={{
-            opacity: 0.7,
+            opacity: 0.6,
             transform: `translate3d(${mousePosition.x * -5}px, ${mousePosition.y * -5}px, 0)`,
           }}
         ></motion.div>
       </div>
 
-      {/* Nueva imagen de fondo con efecto parallax */}
-      <div className="absolute inset-0 z-0 opacity-40">
-        <Image
-          src="https://images.unsplash.com/photo-1462332420958-a05d1e002413?q=80&w=2070&auto=format&fit=crop"
-          alt="Type Ia supernova explosion"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-black/80"></div>
+      {/* Imagen de fondo con ajustes responsivos */}
+      <div className="absolute inset-0 z-0 opacity-40 md:opacity-40 sm:opacity-50 xs:opacity-60">
+        <div className="relative w-full h-full">
+          <Image
+            src="https://images.unsplash.com/photo-1462332420958-a05d1e002413?q=80&w=2070&auto=format&fit=crop"
+            alt="Type Ia supernova explosion"
+            fill
+            className="object-cover md:object-cover object-[25%_center] scale-110 md:scale-100"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70 md:from-black/80 md:via-black/50 md:to-black/80"></div>
+        </div>
       </div>
 
       {/* Floating particles */}
@@ -384,6 +386,17 @@ export function HeroSection() {
           </div>
         </div>
       </div>
+
+      {/* Mobile scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.7 }}
+        transition={{ delay: 2, duration: 1 }}
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white/50 md:hidden"
+      >
+        <span className="text-xs mb-2">Scroll down</span>
+        <ChevronDown className="h-4 w-4 animate-bounce" />
+      </motion.div>
 
       {/* Edge gradients */}
       <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black to-transparent opacity-70"></div>

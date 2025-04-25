@@ -41,9 +41,9 @@ export default function Home() {
     <div className="min-h-screen">
       <Navbar />
       <HeroSection />
-      <div className="dark">
+
       <HighlightedNewsEvents newsEvents={highlightedNewsEvents} />
-      </div>
+
       <QuoteSection />
       <FeaturesSection />
       <FooterSection />

@@ -1,8 +1,7 @@
 import { gql } from "graphql-request";
 
-export const GET_ALL_POSTS = gql`
-  query GetAllPosts {
-    postsCollection(order: date_DESC, limit: 100) {
+export const GET_ALL_POSTS = gql`  query GetAllPosts {
+    postsCollection(order: date_DESC, limit: 50) {
       items {
         title
         slug
@@ -12,6 +11,16 @@ export const GET_ALL_POSTS = gql`
         tag
         photo {
           url
+        }
+        speakersCollection {
+          items {
+            ... on Speakers {
+              name
+              photo {
+                url
+              }
+            }
+          }
         }
       }
     }
@@ -49,7 +58,6 @@ export const GET_POST_BY_SLUG = gql`
     }
   }
 `;
-
 
 // export const GET_POST_BY_SLUG = gql`
 //   query GetPostBySlug($slug: String!) {
@@ -175,7 +183,11 @@ export const GET_RESEARCHER_BY_SLUG = `
 
 export const GET_EVENTS_POSTS = gql`
   query GetEventsPosts {
-    postsCollection(where: { tag_contains_some: ["Events"] }, order: date_DESC, limit: 100) {
+    postsCollection(
+      where: { tag_contains_some: ["Events"] }
+      order: date_DESC
+      limit: 100
+    ) {
       items {
         title
         slug
@@ -194,7 +206,11 @@ export const GET_EVENTS_POSTS = gql`
 
 export const GET_PAPERS_POSTS = gql`
   query GetPapersPosts {
-    postsCollection(where: { tag_contains_some: ["Paper"] }, order: date_DESC, limit: 100) {
+    postsCollection(
+      where: { tag_contains_some: ["Paper"] }
+      order: date_DESC
+      limit: 100
+    ) {
       items {
         title
         slug
