@@ -1,13 +1,17 @@
 "use client"
-
-import type React from "react"
-
 import { useState, useEffect, useRef } from "react"
-import { motion, useScroll, useTransform, useSpring, useInView, AnimatePresence } from "framer-motion"
+import { motion, useScroll, useTransform, useSpring, useInView } from "framer-motion"
 import Link from "next/link"
 import { ArrowRight, ChevronDown } from "lucide-react"
 import Image from "next/image"
 import { QuantumLogo } from "@/components/ui/quantum-logo"
+// Importaciones de Swiper
+import { Swiper, SwiperSlide } from "swiper/react"
+import { Autoplay, Pagination, EffectFade } from "swiper/modules"
+// Estilos de Swiper
+import "swiper/css"
+import "swiper/css/pagination"
+import "swiper/css/effect-fade"
 
 // Founders data for the carousel
 const founders = [
@@ -19,7 +23,7 @@ const founders = [
   {
     name: "Dr. Dionysios Anninos",
     title: "Theoretical Physicist",
-    image: "/images/chalkboard-equations.png",
+    image: "/images/pizarron3.png",
   },
   {
     name: "Dr. Damian Galante",
@@ -30,9 +34,6 @@ const founders = [
 
 export function HeroSection() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [currentSlide, setCurrentSlide] = useState(0)
-  const [isDragging, setIsDragging] = useState(false)
-  const [dragStartX, setDragStartX] = useState(0)
   const heroRef = useRef(null)
   const titleRef = useRef(null)
   const carouselRef = useRef(null)
@@ -60,52 +61,6 @@ export function HeroSection() {
     duration: Math.random() * 25 + 15,
     delay: Math.random() * 5,
   }))
-
-  // Carousel navigation
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev === founders.length - 1 ? 0 : prev + 1))
-  }
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev === 0 ? founders.length - 1 : prev - 1))
-  }
-
-  // Manual swipe handling for mobile
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setIsDragging(true)
-    setDragStartX(e.touches[0].clientX)
-  }
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (!isDragging) return
-
-    setIsDragging(false)
-    const touchEndX = e.changedTouches[0].clientX
-    const diffX = touchEndX - dragStartX
-
-    // Threshold for swipe detection - smaller for mobile
-    const threshold = 20
-
-    if (diffX > threshold) {
-      prevSlide()
-    } else if (diffX < -threshold) {
-      nextSlide()
-    }
-  }
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging) return
-    // Prevent default to stop page scrolling while swiping
-    e.preventDefault()
-  }
-
-  // Auto-advance carousel every 6 seconds
-  useEffect(() => {
-    const timer = setInterval(() => {
-      nextSlide()
-    }, 6000)
-    return () => clearInterval(timer)
-  }, [])
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -290,7 +245,7 @@ export function HeroSection() {
             </motion.div>
           </div>
 
-          {/* Carousel Image Section */}
+          {/* Carousel Image Section with Swiper */}
           <div className="w-full lg:w-1/2 flex justify-center lg:justify-end mt-10 lg:mt-0 md:block">
             <motion.div
               ref={carouselRef}
@@ -300,69 +255,74 @@ export function HeroSection() {
                 scale: springScale,
               }}
             >
-              {/* Carousel container */}
-              <div
-                className="relative rounded-lg overflow-hidden shadow-xl border border-white/20 backdrop-blur-sm group transition-all duration-300 hover:shadow-2xl hover:border-white/30 w-full"
-                onTouchStart={handleTouchStart}
-                onTouchEnd={handleTouchEnd}
-                onTouchMove={handleTouchMove}
-              >
-                {/* Carousel slides */}
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={currentSlide}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      transition={{ duration: 0.5, ease: "easeInOut" }}
-                      className="absolute inset-0"
-                    >
-                      <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-105">
-                        <Image
-                          src={founders[currentSlide].image || "/placeholder.svg"}
-                          alt={`${founders[currentSlide].name}'s chalkboard`}
-                          fill
-                          className="object-cover transition-all duration-700"
-                          priority
-                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 80vw, 50vw"
-                        />
+              {/* Swiper Carousel */}
+              <div className="relative rounded-lg overflow-hidden shadow-xl border border-white/20 backdrop-blur-sm group transition-all duration-300 hover:shadow-2xl hover:border-white/30 w-full">
+                <Swiper
+                  modules={[Autoplay, Pagination, EffectFade]}
+                  effect="fade"
+                  fadeEffect={{
+                    crossFade: true, // Habilitar crossfade para una transición más suave
+                  }}
+                  spaceBetween={0}
+                  slidesPerView={1}
+                  autoplay={{
+                    delay: 6000,
+                    disableOnInteraction: false,
+                  }}
+                  speed={1000} // Aumentar la duración de la transición
+                  pagination={{
+                    clickable: true,
+                    bulletClass:
+                      "inline-block w-3 h-3 mx-2 rounded-full cursor-pointer transition-all duration-300 bg-white/30 hover:bg-white/70",
+                    bulletActiveClass: "!bg-white scale-110",
+                  }}
+                  className="aspect-[4/3]"
+                  onSlideChangeTransitionStart={(swiper) => {
+                    // Añadir clase para efecto de transición al iniciar el cambio
+                    const currentSlide = swiper.slides[swiper.activeIndex] as HTMLElement
+                    if (currentSlide) {
+                      currentSlide.classList.add("slide-transitioning")
+                    }
+                  }}
+                  onSlideChangeTransitionEnd={(swiper) => {
+                    // Remover clase al finalizar la transición
+                    swiper.slides.forEach((slide: HTMLElement) => {
+                      slide.classList.remove("slide-transitioning")
+                    })
+                  }}
+                >
+                  {founders.map((founder, index) => (
+                    <SwiperSlide key={index}>
+                      <div className="relative w-full h-full transition-transform duration-1000">
+                        <div className="absolute inset-0 transition-all duration-1000 group-hover:scale-105">
+                          <Image
+                            src={founder.image || "/placeholder.svg"}
+                            alt={`${founder.name}'s chalkboard`}
+                            fill
+                            className="object-cover transition-all duration-1000 slide-image"
+                            priority
+                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 80vw, 50vw"
+                          />
 
-                        {/* Overlay with gradient */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-transparent to-black/40 transition-opacity duration-300 group-hover:opacity-70"></div>
-                      </div>
+                          {/* Overlay with gradient */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-transparent to-black/40 transition-opacity duration-300 group-hover:opacity-70"></div>
+                        </div>
 
-                      {/* Caption */}
-                      <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm py-3 px-4 text-white">
-                        <div className="flex flex-col">
-                          <span className="text-base font-medium tracking-wide">{founders[currentSlide].name}</span>
-                          <span className="text-sm text-white/70">{founders[currentSlide].title}</span>
+                        {/* Caption */}
+                        <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm py-3 px-4 text-white transition-transform duration-500">
+                          <div className="flex flex-col">
+                            <span className="text-base font-medium tracking-wide">{founder.name}</span>
+                            <span className="text-sm text-white/70">{founder.title}</span>
+                          </div>
                         </div>
                       </div>
-                    </motion.div>
-                  </AnimatePresence>
-                </div>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
               </div>
 
-              {/* Slide indicators - moved outside the carousel container */}
-              <div className="flex justify-center mt-4">
-                <div className="flex space-x-3">
-                  {founders.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentSlide(index)}
-                      className="group"
-                      aria-label={`Go to slide ${index + 1}`}
-                    >
-                      <div
-                        className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                          currentSlide === index ? "bg-white scale-110" : "bg-white/40 group-hover:bg-white/70"
-                        }`}
-                      />
-                    </button>
-                  ))}
-                </div>
-              </div>
+              {/* Custom pagination outside the carousel */}
+              {/* Eliminar esta línea */}
             </motion.div>
           </div>
         </div>
