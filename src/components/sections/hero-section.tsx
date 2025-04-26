@@ -24,7 +24,7 @@ const founders = [
   {
     name: "Dr. Dionysios Anninos",
     title: "Theoretical Physicist",
-    image: "/images/chalkboard-equations.png",
+    image: "/images/pizarron3.png",
   },
   {
     name: "Dr. Damian Galante",
