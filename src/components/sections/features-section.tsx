@@ -125,7 +125,7 @@ export function FeaturesSection() {
             >
               <div className="group h-full flex flex-col items-center text-center">
                 {/* Circular grayscale image */}
-                <div className="relative w-36 h-36 xs:w-40 xs:h-40 sm:w-44 sm:h-44 md:w-52 md:h-52 lg:w-56 lg:h-56 rounded-full overflow-hidden mb-6 shadow-lg border border-gray-300
+                <div className="relative w-36 h-36 xs:w-40 xs:h-40 sm:w-44 sm:h-44 md:w-52 md:h-52 lg:w-56 lg:h-56 rounded-full overflow-hidden mb-6 shadow-lg border border-gray-600
                 -">
                   <div
                     className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
@@ -142,7 +142,7 @@ export function FeaturesSection() {
                     {feature.title}
                   </h3>
 
-                  <div className="w-8 h-1 bg-white/30 rounded-full mb-4 transition-all duration-300 group-hover:w-12 group-hover:bg-white/40"></div>
+                  <div className="w-8 h-1 bg-white/10 rounded-full mb-4 transition-all duration-300 group-hover:w-12 group-hover:bg-white/40"></div>
 
                   <p className="text-white/70 text-sm sm:text-sm md:text-base mb-5 max-w-xs">{feature.description}</p>
 
