@@ -367,6 +367,12 @@ body {
     bottom: 16px !important;
     z-index: 20;
   }
+
+  @media (max-width: 640px) {
+    .swiper-pagination {
+      bottom: 8px !important;
+    }
+  }
 }
 
 /* Añadir estos estilos al final del archivo para los efectos de transición */
@@ -446,5 +452,133 @@ body {
   100% {
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
     opacity: 0;
+  }
+}
+
+/* Efectos adicionales para la transición del carrusel */
+.swiper-slide {
+  transition: transform 0.8s ease, opacity 0.8s ease;
+  overflow: hidden;
+}
+
+/* Añadir estilos para hacer los bullets más pequeños en dispositivos móviles */
+/* Buscar la sección de estilos para los bullets de Swiper y añadir lo siguiente: */
+
+.custom-bullet {
+  width: 8px !important;
+  height: 8px !important;
+  margin: 0 5px !important;
+  background: rgba(255, 255, 255, 0.4) !important;
+  transition: all 0.3s ease;
+}
+
+.custom-bullet-active {
+  background: rgba(255, 255, 255, 1) !important;
+  transform: scale(1.2) !important;
+}
+
+@media (max-width: 640px) {
+  .custom-bullet {
+    width: 5px !important;
+    height: 5px !important;
+    margin: 0 3px !important;
+  }
+}
+
+  .swiper-pagination-bullet-active {
+    transform: scale(1.3) !important;
+    background: rgba(255, 255, 255, 1) !important;
+  }
+
+.swiper-slide-active {
+  z-index: 10;
+}
+
+.swiper-slide-prev {
+  z-index: 5;
+}
+
+/* Efecto de cortina para la transición */
+.swiper-slide::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  transform: translateX(-100%);
+}
+
+.swiper-slide-active::before {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+
+.slide-transitioning::before {
+  opacity: 1;
+  transform: translateX(0);
+  animation: slideCurtain 1.2s forwards;
+}
+
+@keyframes slideCurtain {
+  0% {
+    transform: translateX(-100%);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* Efecto de destello para la transición */
+.swiper-slide-active .slide-image {
+  animation: zoomPulse 1.2s ease-out forwards;
+}
+
+@keyframes zoomPulse {
+  0% {
+    transform: scale(1.15);
+    filter: brightness(0.7) contrast(1.2);
+  }
+  30% {
+    transform: scale(1.05);
+    filter: brightness(1.2) contrast(1.1);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1) contrast(1);
+  }
+}
+
+/* Efecto de desplazamiento 3D para la transición */
+.swiper-wrapper {
+  perspective: 1200px;
+}
+
+.swiper-slide {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+/* Mejorar el efecto creativo */
+.swiper-slide-active {
+  animation: slideReveal 1.2s ease forwards;
+}
+
+@keyframes slideReveal {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
   }
 }

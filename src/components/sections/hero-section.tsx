@@ -7,11 +7,12 @@ import Image from "next/image"
 import { QuantumLogo } from "@/components/ui/quantum-logo"
 // Importaciones de Swiper
 import { Swiper, SwiperSlide } from "swiper/react"
-import { Autoplay, Pagination, EffectFade } from "swiper/modules"
+import { Autoplay, Pagination, EffectFade, EffectCreative } from "swiper/modules"
 // Estilos de Swiper
 import "swiper/css"
 import "swiper/css/pagination"
 import "swiper/css/effect-fade"
+import "swiper/css/effect-creative"
 
 // Founders data for the carousel
 const founders = [
@@ -23,7 +24,7 @@ const founders = [
   {
     name: "Dr. Dionysios Anninos",
     title: "Theoretical Physicist",
-    image: "/images/pizarron3.png",
+    image: "/images/chalkboard-equations.png",
   },
   {
     name: "Dr. Damian Galante",
@@ -258,10 +259,20 @@ export function HeroSection() {
               {/* Swiper Carousel */}
               <div className="relative rounded-lg overflow-hidden shadow-xl border border-white/20 backdrop-blur-sm group transition-all duration-300 hover:shadow-2xl hover:border-white/30 w-full">
                 <Swiper
-                  modules={[Autoplay, Pagination, EffectFade]}
-                  effect="fade"
-                  fadeEffect={{
-                    crossFade: true, // Habilitar crossfade para una transición más suave
+                  modules={[Autoplay, Pagination, EffectFade, EffectCreative]}
+                  effect="creative"
+                  creativeEffect={{
+                    prev: {
+                      shadow: true,
+                      translate: [0, 0, -400],
+                      scale: 0.85,
+                      opacity: 0.3,
+                    },
+                    next: {
+                      translate: ["100%", 0, 0],
+                      scale: 1.2,
+                      opacity: 0,
+                    },
                   }}
                   spaceBetween={0}
                   slidesPerView={1}
@@ -269,12 +280,11 @@ export function HeroSection() {
                     delay: 6000,
                     disableOnInteraction: false,
                   }}
-                  speed={1000} // Aumentar la duración de la transición
+                  speed={1200} // Aumentar la duración de la transición
                   pagination={{
                     clickable: true,
-                    bulletClass:
-                      "inline-block w-3 h-3 mx-2 rounded-full cursor-pointer transition-all duration-300 bg-white/30 hover:bg-white/70",
-                    bulletActiveClass: "!bg-white scale-110",
+                    bulletClass: 'swiper-pagination-bullet custom-bullet',
+                    bulletActiveClass: 'swiper-pagination-bullet-active custom-bullet-active',
                   }}
                   className="aspect-[4/3]"
                   onSlideChangeTransitionStart={(swiper) => {
