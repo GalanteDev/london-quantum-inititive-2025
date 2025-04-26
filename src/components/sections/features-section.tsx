@@ -4,9 +4,32 @@ import { useRef } from "react"
 import Link from "next/link"
 import { motion, useInView, useScroll, useTransform, useSpring } from "framer-motion"
 import { ArrowRight } from "lucide-react"
-import { features } from "@/data"
 import { FadeInOnScroll } from "@/components/scroll-effects/FadeInOnScroll"
 import { ParallaxEffect } from "../scroll-effects/ParallaxEffect"
+import { Feature } from "@/types"
+
+
+const features: Feature[] = [
+  {
+    title: "Quantum Research",
+    description: "Pushing the boundaries of quantum physics with cutting-edge research and experiments.",
+    image: "/images/r.png",
+    link: "/research",
+  },
+  {
+    title: "Collaborative Network",
+    description: "Connecting brilliant minds from around the globe to solve the universe's greatest mysteries.",
+    image: "/images/t.png",
+    link: "/network",
+  },
+  {
+    title: "Educational Outreach",
+    description: "Inspiring the next generation of quantum physicists through innovative educational programs.",
+    image: "/images/o.png",
+    link: "/education",
+  },
+]
+
 
 export function FeaturesSection() {
   const ref = useRef(null)
@@ -102,9 +125,10 @@ export function FeaturesSection() {
             >
               <div className="group h-full flex flex-col items-center text-center">
                 {/* Circular grayscale image */}
-                <div className="relative w-36 h-36 xs:w-40 xs:h-40 sm:w-44 sm:h-44 md:w-52 md:h-52 lg:w-56 lg:h-56 rounded-full overflow-hidden mb-6 shadow-lg border border-white/10">
+                <div className="relative w-36 h-36 xs:w-40 xs:h-40 sm:w-44 sm:h-44 md:w-52 md:h-52 lg:w-56 lg:h-56 rounded-full overflow-hidden mb-6 shadow-lg border border-gray-300
+                -">
                   <div
-                    className="absolute inset-0 bg-cover bg-center grayscale transition-transform duration-700 group-hover:scale-105"
+                    className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
                     style={{ backgroundImage: `url(${feature.image})` }}
                   ></div>
 

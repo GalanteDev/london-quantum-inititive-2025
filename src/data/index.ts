@@ -5,7 +5,7 @@ export const features: Feature[] = [
   {
     title: "Quantum Research",
     description: "Pushing the boundaries of quantum physics with cutting-edge research and experiments.",
-    image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2070&auto=format&fit=crop",
+    image: "r.png",
     link: "/research",
   },
   {
